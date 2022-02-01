@@ -75,8 +75,6 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
     const half = s / 2 - .5 //number of points on each side of central point
     const features = []
     let p = 0
-    let n = 0
-    const colorFeatures = []
     const greyFeatures = []
     for (let i = 0; i < s; i++) {
         for (let j = 0; j < s; j++) {
@@ -126,12 +124,12 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         greyStyle.getImage().setScale(map.getView().getResolutionForZoom(10) / resolution)
                         return greyStyle
                     })
-                    //features[p].setId('grey')  
                     p++
                     console.log("oopsie no data for circle")
                 })
                 .then(function () {
                     if (i == s - 1 && j == s - 1) {//if we are at final point draw map
+                        //Creates vector source and vector layer for map projection.
                         const vectorSource = new ol.source.Vector({
                             features
                         })
@@ -199,15 +197,12 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                             //displayFeatureInfo(evt.pixel)
                         })
                         //Stops mousewheel zoom.
-                        map.getInteractions().forEach(function(interaction) {
+                        map.getInteractions().forEach(function (interaction) {
                             if (interaction instanceof ol.interaction.MouseWheelZoom) {
-                              interaction.setActive(false)
+                                interaction.setActive(false)
                             }
-                          }, this)
+                        }, this)
                     }
-                })
-                .catch(function () {
-                    console.log("oopsie")
                 })
         }
     }
@@ -215,18 +210,14 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
 
 //change zip code when user adds zip code and clicks SUMBIT
 function changeZip() {
-
     zip = locZip.value
-
     const zipUrl = "https://nominatim.openstreetmap.org/search?postalcode=" + zip + "&country=USA&format=json"
-
     fetch(zipUrl).then(function (response) {
         return response.json()
     }).then(function (data) {
         lat = data[0].lat
         lon = data[0].lon
         city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
-
         clear()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
