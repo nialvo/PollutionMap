@@ -77,18 +77,21 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
     let p = 0
     const greyFeatures = []
     for (let i = 0; i < s; i++) {
+        
         for (let j = 0; j < s; j++) {
             let la = lati - half * latInc + i * latInc
             let lo = lonj - half * lonInc + j * lonInc
-            features.push(new ol.Feature({
-                geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
-            }))
+           
             const pollutionUrl = "https://api.waqi.info/feed/geo:" + la + ";" + lo + "/?token=" + AQkey
             fetch(pollutionUrl).then(function (response) {
                 return response.json()
             }).catch(function () {
                 console.log("oopsie response")
             }).then(function (data) {
+                features.push(new ol.Feature({
+                    geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
+                }))
+                console.log(p)
                 let q = data.data.iaqi["pm25"].v//get pm25 level and set color of point
                 const colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
@@ -107,6 +110,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 p++
             })
                 .catch(function () {//Catch occurs when no data available
+                    
                     const greyStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             radius: 100,
@@ -128,7 +132,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                     console.log("oopsie no data for circle")
                 })
                 .then(function () {
-                    if (i == s - 1 && j == s - 1) {//if we are at final point draw map
+                    if (p>80) {//if we are at final point draw map
                         //Creates vector source and vector layer for map projection.
                         const vectorSource = new ol.source.Vector({
                             features
