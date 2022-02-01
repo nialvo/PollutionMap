@@ -198,6 +198,12 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         map.on('click', function (evt) {
                             //displayFeatureInfo(evt.pixel)
                         })
+                        //Stops mousewheel zoom.
+                        map.getInteractions().forEach(function(interaction) {
+                            if (interaction instanceof ol.interaction.MouseWheelZoom) {
+                              interaction.setActive(false)
+                            }
+                          }, this)
                     }
                 })
                 .catch(function () {
