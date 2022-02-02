@@ -325,19 +325,27 @@ function changeCoord() {
     const coords = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326')
     lat = coords[1]
     lon = coords[0]
+
     z = 16///////////////////////////////////////////////////////////change this if we keep the zoom level
     const locUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon + "&zoom=" + z
     fetch(locUrl).then(function (response) {
         return response.json()
     }).then(function (data) {
-        city = data.display_name.substring(data.display_name.indexOf(",") + 1)//extract city, at this zoom level(16)it is second 
-        city = city.substring(0, city.indexOf(","))
-        const matches = data.display_name.match(/\b\d{5}\b/g)//extract zip if present
-
-        if (matches) {//check if zip found
-            zip = matches[0]
-        } else {
-            zip = "00000"
+        try{
+            city = data.display_name.substring(data.display_name.indexOf(",") + 1)//extract city, at this zoom level(16)it is second 
+            city = city.substring(0, city.indexOf(","))
+        }catch{
+            city="???"
+        }
+        try{
+            const matches = data.display_name.match(/\b\d{5}\b/g)//extract zip if present
+            if (matches) {//check if zip found
+                zip = matches[0]
+            } else {
+                zip = "?????"
+            }
+        }catch{
+            zip="?????"
         }
         locZip.value = zip
         //erase previous map and recreate map div
