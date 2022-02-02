@@ -28,6 +28,7 @@ let vectorLayer
   345
   012*/
 //DOM constiables
+const overlayContainerEl = document.querySelector('.overlay-info')
 const popupInfo = document.querySelector('.overlay-text')
 const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
@@ -92,7 +93,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
             fetch(pollutionUrl).then(function (response) {
                 return response.json()
             }).catch(function () {
-                console.log("oopsie response")
+                console.log("NO RESPONSE")
             }).then(function (data) {
                 if (i == half && j == half) {//if we are at central point display other pollution data if available
                     llTitle.textContent = "The pollution levels in " + city + " are:"
@@ -110,7 +111,6 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 features.push(new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
                 }))
-                console.log(p)
                 let q = data.data.iaqi["pm25"].v//get pm25 level and set color of point
                 const colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
@@ -155,7 +155,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         return greyStyle
                     })*/
                     p++
-                    console.log("oopsie no data for circle")
+                    console.log("NO DATA FOUND FOR CIRCLE")
                 })
                 .then(function () {
                     if (p>80) {//if we are at final point draw map
@@ -221,19 +221,16 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                 let clickedCoordinate = feature.A.geometry.flatCoordinates
                                 let clickedInfo = feature.get('id')
                                 popup.setPosition(clickedCoordinate)
-                                console.log(popupInfo)
                                 popupInfo.innerHTML = clickedInfo
                             })
                             displayFeatureInfo(pixel)
                         })
-                        const overlayContainerEl = document.querySelector('.overlay-info')
+
                         const popup = new ol.Overlay( {
                             element: overlayContainerEl,
                             zIndex: 1                
                         })
                         map.addOverlay(popup)
-                        console.log(map.getOverlays())
-                        console.log(popup)
 
                         //Add click event to each feature.
                         /*map.on('click', function (evt) {
@@ -299,7 +296,7 @@ function changeCoord() {
         clear()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
-        console.log("Noo")
+        console.log("ERROR CHANGING LOCATION")
     })
 }
 
