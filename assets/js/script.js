@@ -56,7 +56,7 @@ NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 
-if (localStorage.getItem('place') == null){
+if (localStorage.getItem('place7896') == null){
     var storedSearches = [[],[]];
     for(let v=0; v<3; v++){
         HDISP.children[v].children[0].textContent="";
@@ -64,7 +64,7 @@ if (localStorage.getItem('place') == null){
     }
     displaySearches(fs)
 }else{
-    var storedSearches = [JSON.parse(localStorage.place),JSON.parse(localStorage.levels)];
+    var storedSearches = [JSON.parse(localStorage.place7896),JSON.parse(localStorage.levels7896)];
     displaySearches(fs)
 }
 
@@ -105,8 +105,8 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
    
     eraseSearchDisplay();
     displaySearches(fs);
-    localStorage.place = JSON.stringify(storedSearches[0]);
-    localStorage.levels = JSON.stringify(storedSearches[1]);
+    localStorage.place7896 = JSON.stringify(storedSearches[0]);
+    localStorage.levels7896 = JSON.stringify(storedSearches[1]);
 
     
     
