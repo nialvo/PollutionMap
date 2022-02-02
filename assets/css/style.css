@@ -21,8 +21,7 @@
 }
 
 #info{
-    height:45px;
-    
+    height:45px;  
 }
 #infobox{
     width: 600px; 
@@ -30,7 +29,6 @@
     justify-content:left;
 }
 #box{
-    
     display:flex;
     justify-content:center;
 }
@@ -50,5 +48,11 @@
 
 }
 
+.overlay-info {
+    width: 20px;
+    height: 20px;
+}
 
-
+.overlay-text {
+    font-size: 12px;
+}

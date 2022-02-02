@@ -86,7 +86,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
         for (let j = 0; j < s; j++) {
             let la = lati - half * latInc + i * latInc
             let lo = lonj - half * lonInc + j * lonInc
-           
+          
             const pollutionUrl = "https://api.waqi.info/feed/geo:" + la + ";" + lo + "/?token=" + AQkey
             fetch(pollutionUrl).then(function (response) {
                 return response.json()
@@ -106,7 +106,6 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         }
                     }
                 }
-
                 features.push(new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
                 }))
@@ -135,8 +134,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 })*/
                 p++
             })
-                .catch(function () {//Catch occurs when no data available
-                    
+                .catch(function () {//Catch occurs when no data available                    
                     const greyStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             radius: 15,
@@ -159,7 +157,6 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                     console.log("oopsie no data for circle")
                 })
                 .then(function () {
-
                     if (p>80) {//if we are at final point draw map
                         //Creates vector source and vector layer for map projection.
                         const vectorSource = new ol.source.Vector({
@@ -192,22 +189,17 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                             updateWhileAnimating: true,
                             updateWhileInteracting: true,
                             opacity: 1,
-                            zIndex: 1
+                            zIndex: 2
                         })
                         //On hit detection of feature, change opacity and append info to info.innerHTML.
                         const displayFeatureInfo = function (pixel) {
                             vectorLayer.getFeatures(pixel)
                                 .then(function (features) {
                                     const feature = features.length ? features[0] : undefined
-                                    const info = document.getElementById('info')
-                                    if (features.length) {
-                                        info.innerHTML = feature.get('id')
-                                    } else {
-                                        info.innerHTML = ''
-                                    }
                                     if (feature !== highlight) {
                                         if (highlight) {
                                             featureOverlay.getSource().removeFeature(highlight)
+                                            popupInfo.innerHTML = ''
                                         }
                                         if (feature) {
                                             featureOverlay.getSource().addFeature(feature)
@@ -216,10 +208,6 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                     }
                                 })
                         }
-                        const overlayContainerEl = document.querySelector('#info')
-                        const popup = new ol.Overlay( {
-                            element: overlayContainerEl                
-                        })
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             if (evt.dragging) {
@@ -227,12 +215,28 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                             }
                             //If there is no dragging, then displayFeatureInfo runs
                             const pixel = map.getEventPixel(evt.originalEvent)
+                            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                                let clickedCoordinate = feature.A.geometry.flatCoordinates
+                                let clickedInfo = feature.get('id')
+                                popup.setPosition(clickedCoordinate)
+                                console.log(popupInfo)
+                                popupInfo.innerHTML = clickedInfo
+                            })
                             displayFeatureInfo(pixel)
                         })
-                        //Add click event to each feature.
-                        map.on('click', function (evt) {
-                            //displayFeatureInfo(evt.pixel)
+                        const overlayContainerEl = document.querySelector('.overlay-info')
+                        const popup = new ol.Overlay( {
+                            element: overlayContainerEl,
+                            zIndex: 1                
                         })
+                        map.addOverlay(popup)
+                        console.log(map.getOverlays())
+                        console.log(popup)
+                        const popupInfo = document.querySelector('.overlay-text')
+                        //Add click event to each feature.
+                        /*map.on('click', function (evt) {
+
+                        })*/                   
                         //Stops mousewheel zoom.
                         map.getInteractions().forEach(function (interaction) {
                             if (interaction instanceof ol.interaction.MouseWheelZoom) {
@@ -312,7 +316,6 @@ function zout(){
         zoomLevel-=2;
         changeCoord();
     }
-
 }
 
 function zin(){
@@ -322,6 +325,4 @@ function zin(){
         zoomLevel+=2;
         changeCoord();
     }
-    
-
 }
