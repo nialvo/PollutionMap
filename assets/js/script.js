@@ -247,6 +247,9 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                             if (interaction instanceof ol.interaction.PinchZoom) {
                                 interaction.setActive(false)
                             }
+                            if (interaction instanceof ol.interaction.DoubleClickZoom) {
+                                interaction.setActive(false)
+                            }
                         }, this)
                     }
                 })
