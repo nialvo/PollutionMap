@@ -28,6 +28,7 @@ let vectorLayer
   345
   012*/
 //DOM constiables
+const popupInfo = document.querySelector('.overlay-text')
 const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
 const locZip = document.getElementById("enterZip")
@@ -208,6 +209,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                     }
                                 })
                         }
+
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             if (evt.dragging) {
@@ -232,7 +234,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         map.addOverlay(popup)
                         console.log(map.getOverlays())
                         console.log(popup)
-                        const popupInfo = document.querySelector('.overlay-text')
+
                         //Add click event to each feature.
                         /*map.on('click', function (evt) {
 
