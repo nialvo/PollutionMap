@@ -307,7 +307,11 @@ function changeZip() {
     }).then(function (data) {
         lat = data[0].lat
         lon = data[0].lon
-        city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
+        try{
+            city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
+        }catch{
+            city="???"
+        }
         clearM()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
@@ -340,6 +344,11 @@ function changeCoord() {
         clearM()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
+        clearM()
+        drawGrid(lat, lon, gridSize, city)
+        city="???"
+        zip="?????"
+
         console.log("ERROR CHANGING LOCATION")
     })
 }
