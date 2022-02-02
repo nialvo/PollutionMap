@@ -56,7 +56,7 @@ NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 
-if (localStorage.length==0){
+if (localStorage.getItem('place') == null){
     var storedSearches = [[],[]];
     for(let v=0; v<3; v++){
         HDISP.children[v].children[0].textContent="";
