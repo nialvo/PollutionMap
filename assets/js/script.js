@@ -14,11 +14,12 @@ const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 //map constiables
 const ourZoom = 3
 //these three must change with zoom, or first two musy change when user changes zoom
-const lonInc = .2 * ourZoom//increments of lat lon degrees for the grid (set to be roughly equal in USA)
-const latInc = .16 * ourZoom
-const zoomLevel = 8.5 / (ourZoom / 2.4)//this isn't right////////////////////////////////////////////////////////////////////////////////!!
+var lonInc = .2 * ourZoom//increments of lat lon degrees for the grid (set to be roughly equal in USA)
+var latInc = .16 * ourZoom
+var zoomLevel = 8.5 / (ourZoom / 2.4)//this isn't right////////////////////////////////////////////////////////////////////////////////!!
 
 let features
+
 let map
 let vectorSource
 let vectorLayer
@@ -37,6 +38,10 @@ const OK = document.getElementById("ok")
 OK.addEventListener("click", changeZip)
 const HERE = document.getElementById("here")
 HERE.addEventListener("click", changeCoord)
+const ZIN = document.getElementById("Zin")//zoom
+ZIN.addEventListener("click", zin)
+const ZOUT = document.getElementById("Zout")
+ZOUT.addEventListener("click", zout)
 
 start()
 
@@ -88,6 +93,20 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
             }).catch(function () {
                 console.log("oopsie response")
             }).then(function (data) {
+                if (i == half && j == half) {//if we are at central point display other pollution data if available
+                    llTitle.textContent = "The pollution levels in " + city + " are:"
+                    for (let m = 0; m < 7; m++) {
+                        llContent.children[m].textContent = "";
+                    }
+                    z = 0;
+                    for (const potype of pollTypes) {
+                        if (potype in data.data.iaqi) {
+                            llContent.children[z].textContent = potype + ": " + data.data.iaqi[potype].v;
+                            z++;
+                        }
+                    }
+                }
+
                 features.push(new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
                 }))
@@ -95,43 +114,52 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 let q = data.data.iaqi["pm25"].v//get pm25 level and set color of point
                 const colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 100,
+                        radius: 15,
                         fill: new ol.style.Fill({ color: [Math.min(q * 2, 255), Math.max(255 - q * 2, 0), Math.min(Math.max(0, 2 * (q - 70)), 255)] })//set color with rgb
                     })
                 })
+
                 //Applies an id of 'color' to each point with no data.
-                features[p].set('id', q)
+                let str="levels here:    ";
+                for (const ptype of pollTypes) {
+                    if (ptype in data.data.iaqi) {
+                        str=str+ptype+": "+data.data.iaqi[ptype].v+"     ";
+                    }
+                }
+                features[p].set('id', str)
                 features[p].setStyle(colorStyle)
                 //Applies dynamic size adjustment to each feature.
-                features[p].setStyle(function (feature, resolution) {
+                /*features[p].setStyle(function (feature, resolution) {
                     colorStyle.getImage().setScale(map.getView().getResolutionForZoom(10) / resolution)
                     return colorStyle
-                })
+                })*/
                 p++
             })
                 .catch(function () {//Catch occurs when no data available
                     
                     const greyStyle = new ol.style.Style({
                         image: new ol.style.Circle({
-                            radius: 100,
+                            radius: 15,
                             fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data
                         })
                     })
                     //Applies an id of 'grey' to each point with no data.
                     greyFeatures.push(features[p])
+                    let str="no data here";
                     for (let each of greyFeatures) {
-                        each.set('id', 'grey')
+                        each.set('id', str)
                     }
                     features[p].setStyle(greyStyle)
                     //Applies dynamic size adjustment to each feature.
-                    features[p].setStyle(function (feature, resolution) {
+                    /*features[p].setStyle(function (feature, resolution) {
                         greyStyle.getImage().setScale(map.getView().getResolutionForZoom(10) / resolution)
                         return greyStyle
-                    })
+                    })*/
                     p++
                     console.log("oopsie no data for circle")
                 })
                 .then(function () {
+
                     if (p>80) {//if we are at final point draw map
                         //Creates vector source and vector layer for map projection.
                         const vectorSource = new ol.source.Vector({
@@ -146,6 +174,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         //draw map centered on given coordinates
                         map = new ol.Map({
                             target: 'map',
+                            controls: [],
                             layers: [
                                 new ol.layer.Tile({
                                     source: new ol.source.OSM()
@@ -187,12 +216,16 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                     }
                                 })
                         }
+                        const overlayContainerEl = document.querySelector('#info')
+                        const popup = new ol.Overlay( {
+                            element: overlayContainerEl                
+                        })
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             if (evt.dragging) {
                                 return
                             }
-                            //If there is no draggin, then displayFeatureInfo runs
+                            //If there is no dragging, then displayFeatureInfo runs
                             const pixel = map.getEventPixel(evt.originalEvent)
                             displayFeatureInfo(pixel)
                         })
@@ -203,6 +236,12 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         //Stops mousewheel zoom.
                         map.getInteractions().forEach(function (interaction) {
                             if (interaction instanceof ol.interaction.MouseWheelZoom) {
+                                interaction.setActive(false)
+                            }
+                            if (interaction instanceof ol.interaction.KeyboardZoom) {
+                                interaction.setActive(false)
+                            }
+                            if (interaction instanceof ol.interaction.PinchZoom) {
                                 interaction.setActive(false)
                             }
                         }, this)
@@ -264,4 +303,25 @@ function clear() {
     m.setAttribute("class", "map")
     m.setAttribute("id", "map")
     disp.append(m)
+}
+
+function zout(){
+    if (zoomLevel>4){
+        lonInc*=4;
+        latInc*=4;
+        zoomLevel-=2;
+        changeCoord();
+    }
+
+}
+
+function zin(){
+    if(zoomLevel<12){
+        lonInc*=.25;
+        latInc*=.25;
+        zoomLevel+=2;
+        changeCoord();
+    }
+    
+
 }

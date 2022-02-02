@@ -20,12 +20,35 @@
     margin:auto;  
 }
 
-.line{
+#info{
+    height:45px;
+    
+}
+#infobox{
+    width: 600px; 
     display:flex;
-    justify-content:flex-start;
+    justify-content:left;
 }
-.line p{
-    width:50px;
+#box{
+    
+    display:flex;
+    justify-content:center;
 }
+.boxlet1{
+    height:500px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+.boxlet1 button{
+    font-size:25px;
+    text-align:center;
+}
+#Zin,#Zout{
+    height:30px;
+    width:30px;
+
+}
+
 
 
