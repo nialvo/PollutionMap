@@ -34,8 +34,9 @@ const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
 const locZip = document.getElementById("enterZip")
 locZip.value = ""
+var disp = document.getElementById("disp");
 
-//buttons
+//map buttons
 const OK = document.getElementById("ok")
 OK.addEventListener("click", changeZip)
 const HERE = document.getElementById("here")
@@ -44,6 +45,28 @@ const ZIN = document.getElementById("Zin")//zoom
 ZIN.addEventListener("click", zin)
 const ZOUT = document.getElementById("Zout")
 ZOUT.addEventListener("click", zout)
+
+//local storage stuff
+var HDISP = document.getElementById("displayedSearches")
+var fs=0;//index of first stored element to display
+var PREV = document.getElementById("seePrev")
+PREV.addEventListener("click", seePrev)
+var NEXT = document.getElementById("seeNext")
+NEXT.addEventListener("click", seeNext)
+var ERASE = document.getElementById("eraseSearches")
+ERASE.addEventListener("click", eraseSearches)
+
+if (localStorage.length==0){
+    var storedSearches = [[],[]];
+    for(let v=0; v<3; v++){
+        HDISP.children[v].children[0].textContent="";
+        HDISP.children[v].children[1].textContent="";
+    }
+    displaySearches(fs)
+}else{
+    var storedSearches = [JSON.parse(localStorage.place),JSON.parse(localStorage.levels)];
+    displaySearches(fs)
+}
 
 start()
 
@@ -79,6 +102,17 @@ function start() {
 }
 
 function drawGrid(lati, lonj, s, City) { //s is width and height of grid
+   
+    eraseSearchDisplay();
+    displaySearches(fs);
+    localStorage.place = JSON.stringify(storedSearches[0]);
+    localStorage.levels = JSON.stringify(storedSearches[1]);
+
+    
+    
+    
+    
+    
     const half = s / 2 - .5 //number of points on each side of central point
     const features = []
     let p = 0
@@ -101,12 +135,19 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                         llContent.children[m].textContent = "";
                     }
                     z = 0;
+                    let sstr="";
                     for (const potype of pollTypes) {
                         if (potype in data.data.iaqi) {
                             llContent.children[z].textContent = potype + ": " + data.data.iaqi[potype].v;
+                            sstr=sstr+llContent.children[z].textContent+"  ";
                             z++;
+
                         }
                     }
+                    //log the central point to stored searches
+                    storedSearches[0].push(city+" "+zip);
+                    storedSearches[1].push(sstr)
+                    
                 }
                 features.push(new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))//describes a grid centered at lati lonj
@@ -267,7 +308,7 @@ function changeZip() {
         lat = data[0].lat
         lon = data[0].lon
         city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
-        clear()
+        clearM()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         zip = "enter valid zip"
@@ -296,14 +337,14 @@ function changeCoord() {
         }
         locZip.value = zip
         //erase previous map and recreate map div
-        clear()
+        clearM()
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR CHANGING LOCATION")
     })
 }
 
-function clear() {
+function clearM() {
     disp.children[0].remove()
     const m = document.createElement("div")
     m.setAttribute("class", "map")
@@ -327,4 +368,72 @@ function zin(){
         zoomLevel+=2;
         changeCoord();
     }
+}
+
+function displaySearches(index){
+    if(index==0){
+        PREV.setAttribute("style","visibility:hidden");
+    }else{
+        PREV.setAttribute("style","visibility:visible");
+    }
+    
+    if (storedSearches[0].length-index<4){
+        let w=0;
+        for(let v=index; v<storedSearches[0].length; v++){
+            HDISP.children[w].children[0].textContent=storedSearches[0][v];
+            HDISP.children[w].children[1].textContent=storedSearches[1][v];
+            w++;
+        }
+        NEXT.setAttribute("style","visibility:hidden");
+        
+    }else{
+        let w=0;
+        for(let v=index; v<index+3; v++){
+            HDISP.children[w].children[0].textContent=storedSearches[0][v];
+            HDISP.children[w].children[1].textContent=storedSearches[1][v];
+            w++;
+        }
+        NEXT.setAttribute("style","visibility:visible");
+    
+    }
+    if(storedSearches[0].length==0){
+        ERASE.setAttribute("style","visibility:hidden");
+    }else{
+        ERASE.setAttribute("style","visibility:visible");
+
+    }
+
+}
+
+function seePrev(){
+    fs-=3;
+    eraseSearchDisplay()
+    displaySearches(fs)
+}
+
+function seeNext(){
+    fs+=3;
+    eraseSearchDisplay()
+    displaySearches(fs)
+
+}
+
+function eraseSearches(){
+    storedSearches = [[],[]];
+    localStorage.clear();//erase stored scoreboard
+    eraseSearchDisplay();
+    return;
+
+}
+
+function eraseSearchDisplay(){
+    ERASE.setAttribute("style","visibility:hidden");
+    NEXT.setAttribute("style","visibility:hidden");
+    PREV.setAttribute("style","visibility:hidden");
+    for(let v=0; v<3; v++){
+        HDISP.children[v].children[0].textContent="";
+        HDISP.children[v].children[1].textContent="";
+    }
+
+
 }
