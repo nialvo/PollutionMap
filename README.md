@@ -1,5 +1,7 @@
 # bluerSkies
 
+<img src="./assets/images/TranspCenterLogo.png" alt="The logo">
+
 This website displays a scrollable map with a grid of colored points representing fine particle pollution levels.<br>
 It uses (quasi) unlimited free APIs.<br>
 
