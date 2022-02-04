@@ -37,6 +37,7 @@ const llContent = document.getElementById("levelsContent")
 const locZip = document.getElementById("enterZip")
 locZip.value = ""
 var disp = document.getElementById("disp");
+var disp2 = document.getElementById("disp2");
 
 //map buttons
 const OK = document.getElementById("ok")
@@ -479,3 +480,5 @@ function eraseSearchDisplay(){
 
 
 }
+
+//hello hello merge test
