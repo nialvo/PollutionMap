@@ -164,10 +164,10 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 })
 
                 //Applies an id of 'color' to each point with no data.
-                let str="levels here:    ";
+                let str="Here:  \n  ";
                 for (const ptype of pollTypes) {
                     if (ptype in data.data.iaqi) {
-                        str=str+ptype+": "+data.data.iaqi[ptype].v+"     ";
+                        str=str+ptype+": "+data.data.iaqi[ptype].v+"   \n  ";
                     }
                 }
                 features[p].set('id', str)
@@ -245,9 +245,11 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                         if (highlight) {
                                             featureOverlay.getSource().removeFeature(highlight)
                                             popupInfo.innerHTML = ''
+                                            overlayContainerEl.setAttribute("style","visibility:hidden")
                                         }
                                         if (feature) {
                                             featureOverlay.getSource().addFeature(feature)
+                                            overlayContainerEl.setAttribute("style","visibility:visible")
                                         }
                                         highlight = feature
                                     }

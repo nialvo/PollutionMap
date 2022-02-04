@@ -55,12 +55,13 @@
 }
 
 #levelsContent p{
-    width:50px;
+    width:80px;
 }
 
 #levelsContent{
     display:flex;
     flex-wrap:flex;
+    justify-content:space-evenly;
     
     
 }
@@ -70,13 +71,18 @@
 
 }
 
-.overlay-info {
-    width: 20px;
-    height: 20px;
+#info {
+    width: 65px;
+    height:auto;
+    background-color: rgb(220, 226, 233);
+    border: 1px solid rgb(3, 38, 48);
+    border-radius:5px;
+    
+    
 }
 
-.overlay-text {
-    font-size: 12px;
+#feature-info {
+    font-size: 15px;
 }
 
 
