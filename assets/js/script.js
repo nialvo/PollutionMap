@@ -82,6 +82,9 @@ function start() {
             lon = data.longitude
             if (data.city) {
                 city = data.city
+                if(city==""){
+                    city="Unnamed location"
+                }
             } else {
                 city = "Unnamed location"
             }
@@ -320,8 +323,13 @@ function changeZip() {
         lon = data[0].lon
         try{
             city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
+            if(city==""){
+                city="Unnamed location"
+            }
         }catch{
-            city="???"
+            
+            city="Unnamed location"
+            
         }
         
         drawGrid(lat, lon, gridSize, city)
@@ -348,8 +356,11 @@ function changeCoord() {
         try{
             city = data.display_name.substring(data.display_name.indexOf(",") + 1)//extract city, at this zoom level(16)it is second 
             city = city.substring(0, city.indexOf(","))
+            if(city==""){
+                city="Unnamed location"
+            }
         }catch{
-            city="???"
+            city="Unnamed location"
         }
         try{
             const matches = data.display_name.match(/\b\d{5}\b/g)//extract zip if present
