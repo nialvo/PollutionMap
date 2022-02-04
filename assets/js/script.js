@@ -14,15 +14,17 @@ const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 //map constiables
 const ourZoom = 3
 //these three must change with zoom, or first two musy change when user changes zoom
-var lonInc = .2 * ourZoom//increments of lat lon degrees for the grid (set to be roughly equal in USA)
+var lonInc;//depends on latitude
 var latInc = .16 * ourZoom
 var zoomLevel = 8.5 / (ourZoom / 2.4)//this isn't right////////////////////////////////////////////////////////////////////////////////!!
 
-let features
+var features//////if declared as var here then no repeated maps
+var greyFeatures///
+var map////
+var vectorSource////
+var vectorLayer/////
+var p///////
 
-let map
-let vectorSource
-let vectorLayer
 //p in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -95,6 +97,7 @@ function start() {
             city = "Beverley Hills"
         }
         locZip.value = zip
+
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("Nooo")
@@ -109,14 +112,14 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
     localStorage.levels7896 = JSON.stringify(storedSearches[1]);
 
     
-    
+    lonInc = latInc/Math.cos(lati*0.0174533)//make latinc and loninc equal in distance at center
     
     
     
     const half = s / 2 - .5 //number of points on each side of central point
-    const features = []
-    let p = 0
-    const greyFeatures = []
+    features = []
+    p = 0
+    greyFeatures = []
     for (let i = 0; i < s; i++) {
         
         for (let j = 0; j < s; j++) {
@@ -201,10 +204,10 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 .then(function () {
                     if (p>80) {//if we are at final point draw map
                         //Creates vector source and vector layer for map projection.
-                        const vectorSource = new ol.source.Vector({
+                        vectorSource = new ol.source.Vector({
                             features
                         })
-                        const vectorLayer = new ol.layer.Vector({
+                        vectorLayer = new ol.layer.Vector({
                             source: vectorSource,
                             updateWhileAnimating: true,
                             updateWhileInteracting: true,
@@ -292,6 +295,8 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                                 interaction.setActive(false)
                             }
                         }, this)
+                        OK.addEventListener("click", changeZip)
+                        HERE.addEventListener("click", changeCoord)
                     }
                 })
         }
@@ -300,6 +305,10 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
 
 //change zip code when user adds zip code and clicks SUMBIT
 function changeZip() {
+    OK.removeEventListener("click", changeZip)
+    HERE.removeEventListener("click", changeCoord)
+    clearM()
+
     zip = locZip.value
     const zipUrl = "https://nominatim.openstreetmap.org/search?postalcode=" + zip + "&country=USA&format=json"
     fetch(zipUrl).then(function (response) {
@@ -312,7 +321,7 @@ function changeZip() {
         }catch{
             city="???"
         }
-        clearM()
+        
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         zip = "enter valid zip"
@@ -322,6 +331,9 @@ function changeZip() {
 }
 
 function changeCoord() {
+    OK.removeEventListener("click", changeZip)
+    HERE.removeEventListener("click", changeCoord)
+    clearM()
     const coords = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326')
     lat = coords[1]
     lon = coords[0]
@@ -349,7 +361,7 @@ function changeCoord() {
         }
         locZip.value = zip
         //erase previous map and recreate map div
-        clearM()
+        
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         clearM()
