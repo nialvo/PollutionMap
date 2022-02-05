@@ -15,9 +15,11 @@ const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 const ourZoom = 3
 //these three must change with zoom, or first two musy change when user changes zoom
 var lonInc;//depends on latitude
-var latInc = .16 * ourZoom
-var zoomLevel = 8.5 / (ourZoom / 2.4)//this isn't right////////////////////////////////////////////////////////////////////////////////!!
-
+const Inc = .00036795;
+var latInc=.45;
+var zoomLevel = 7//////////////////////////////////////////////////////////////////////////////!!
+var rad=15;
+const rInc=.01635
 var features//////if declared as var here then no repeated maps
 var greyFeatures///
 var map////
@@ -44,10 +46,10 @@ const OK = document.getElementById("ok")
 OK.addEventListener("click", changeZip)
 const HERE = document.getElementById("here")
 HERE.addEventListener("click", changeCoord)
-const ZIN = document.getElementById("Zin")//zoom
+/*const ZIN = document.getElementById("Zin")//zoom
 ZIN.addEventListener("click", zin)
 const ZOUT = document.getElementById("Zout")
-ZOUT.addEventListener("click", zout)
+ZOUT.addEventListener("click", zout)*/
 
 //local storage stuff
 var HDISP = document.getElementById("displayedSearches")
@@ -162,7 +164,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 let q = data.data.iaqi["pm25"].v//get pm25 level and set color of point
                 const colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 15,
+                        radius: rad,
                         fill: new ol.style.Fill({ color: [Math.min(q * 2, 255), Math.max(255 - q * 2, 0), Math.min(Math.max(0, 2 * (q - 70)), 255)] })//set color with rgb
                     })
                 })
@@ -177,16 +179,16 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                 features[p].set('id', str)
                 features[p].setStyle(colorStyle)
                 //Applies dynamic size adjustment to each feature.
-                /*features[p].setStyle(function (feature, resolution) {
-                    colorStyle.getImage().setScale(map.getView().getResolutionForZoom(10) / resolution)
+                features[p].setStyle(function (feature, resolution) {
+                    colorStyle.getImage().setScale(1000 / resolution)
                     return colorStyle
-                })*/
+                })
                 p++
             })
                 .catch(function () {//Catch occurs when no data available                    
                     const greyStyle = new ol.style.Style({
                         image: new ol.style.Circle({
-                            radius: 15,
+                            radius: rad,
                             fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data
                         })
                     })
@@ -198,10 +200,10 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                     }
                     features[p].setStyle(greyStyle)
                     //Applies dynamic size adjustment to each feature.
-                    /*features[p].setStyle(function (feature, resolution) {
-                        greyStyle.getImage().setScale(map.getView().getResolutionForZoom(10) / resolution)
+                    /features[p].setStyle(function (feature, resolution) {
+                        greyStyle.getImage().setScale(1000 / resolution)
                         return greyStyle
-                    })*/
+                    })
                     p++
                     console.log("NO DATA FOUND FOR CIRCLE")
                 })
@@ -287,7 +289,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
 
                         })*/                   
                         //Stops mousewheel zoom.
-                        map.getInteractions().forEach(function (interaction) {
+                        /*map.getInteractions().forEach(function (interaction) {
                             if (interaction instanceof ol.interaction.MouseWheelZoom) {
                                 interaction.setActive(false)
                             }
@@ -300,7 +302,7 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
                             if (interaction instanceof ol.interaction.DoubleClickZoom) {
                                 interaction.setActive(false)
                             }
-                        }, this)
+                        }, this)*/
                         OK.addEventListener("click", changeZip)
                         HERE.addEventListener("click", changeCoord)
                     }
@@ -313,6 +315,10 @@ function drawGrid(lati, lonj, s, City) { //s is width and height of grid
 function changeZip() {
     OK.removeEventListener("click", changeZip)
     HERE.removeEventListener("click", changeCoord)
+    zoomLevel=map.getView().getZoom();
+    let ww=map.getView().getResolution();
+    latInc=Inc*ww;
+    rad=rInc*ww;
     clearM()
 
     zip = locZip.value
@@ -342,8 +348,13 @@ function changeZip() {
 }
 
 function changeCoord() {
+    
     OK.removeEventListener("click", changeZip)
     HERE.removeEventListener("click", changeCoord)
+    zoomLevel=map.getView().getZoom();
+    let ww=map.getView().getResolution();
+    latInc=Inc*ww;
+    rad=rInc*ww;
     clearM()
     const coords = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326')
     lat = coords[1]
@@ -394,7 +405,7 @@ function clearM() {
     m.setAttribute("id", "map")
     disp.append(m)
 }
-
+/*
 function zout(){
     if (zoomLevel>4){
         lonInc*=4;
@@ -412,7 +423,7 @@ function zin(){
         changeCoord();
     }
 }
-
+*/
 function displaySearches(index){
     if(index==0){
         PREV.setAttribute("style","visibility:hidden");
