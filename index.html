@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/build/ol.js"></script>
+    <title>Bluer Skies</title>
+</head>
+
+<body>
+
+    <div class="banner">
+        <div>
+            <br>
+            <h1>Bluer Skies</h1><br><br>
+        </div>
+    </div>
+
+    <div class="menu">
+        <h3>Enter a zip code or scroll the map to see air pollution levels for different locations</h3>
+        <form>
+            <label for="zip">Zip Code:</label><br>
+            <input type="text" id="enterZip" name="zip"><br>
+        </form>
+        <button type="button" id="ok">Search this Zip</button><br>
+        <button type="button" id="here">Search this map location</button>
+    </div>
+    <div id="box">
+        <div class="boxlet1">
+            <button type="button" id="Zin">+</button><br>
+            <button type="button" id="Zout">-</button>
+
+        </div>
+        <div class="boxlet2">
+            <div class="TitleWrap">
+                <h2>PM 2.5 levels</h2>
+            </div>
+            <div id="overlayContainer">
+                <div id="disp">
+                    <div id="map" class="map"></div>
+                </div>
+                <div id="wait">
+                    <img src="./assets/images/patience.png" alt="waiting image">
+                </div>
+            </div>
+
+            <div id="infobox">
+
+            </div>
+        </div>
+        <div class="boxlet3">
+            <br>
+            <div id="localLevels">
+                <div class="TitleWrap">
+                    <h2 id="levelsTitle"></h2>
+                </div> 
+                <div id="levelsContent">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+            <br>
+            <div id="previous">
+                <div class="TitleWrap">
+                    <h2>Previous Searches</h2>
+                </div>
+                <div id="disp2">
+                    <button type="button" id="seePrev">Previous</button>
+                    <div id="displayedSearches">
+                        <div>
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                        <div>
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                        <div>
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="seeNext">Next</button>
+                </div>
+                <button type="button" id="eraseSearches">Erase Search History</button>
+                
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class='overlay-info' id="info">
+        <span class ='overlay-text' id='feature-info'></span><br>
+    </div>
+
+    <script type="text/javascript" src="./assets/js/script.js"></script>
+
+
+</body>
+
+
+
+
+
+</html>
