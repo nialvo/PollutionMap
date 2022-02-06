@@ -187,7 +187,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     features[p].setStyle(greyStyle)
                     //Applies dynamic size adjustment to each feature.
                     features[p].setStyle(function (feature, resolution) {
-                        greyStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution) 
+                        greyStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
                         return greyStyle
                     })
                     p++
@@ -206,6 +206,12 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             updateWhileInteracting: true,
                             opacity: 0.5
                         })
+                        let T
+                        function dragTrig() {
+                            console.log("DRAAAAAG")
+                            clearTimeout(T)
+                            T = setTimeout(changeCoord, 750)
+                        }
                         //Draw map centered on given coordinates.
                         map = new ol.Map({
                             target: 'map',
@@ -297,6 +303,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
                         })
+                        map.getView().on("change:center",dragTrig)
                         map.addOverlay(popup)
                         OK.addEventListener("click", changeZip)
                         HERE.addEventListener("click", changeCoord)
@@ -332,7 +339,7 @@ function changeZip() {
     OK.removeEventListener("click", changeZip)
     HERE.removeEventListener("click", changeCoord)
     let resolution = map.getView().getResolution()
-    latInc = Inc*resolution
+    latInc = Inc * resolution
     zoomLevel = map.getView().getZoom()
     clearM()
     zip = locZip.value
@@ -362,8 +369,8 @@ function changeCoord() {
     OK.removeEventListener("click", changeZip)
     HERE.removeEventListener("click", changeCoord)
     let resolution = map.getView().getResolution()
-    console.log('resolution: ' +resolution)
-    latInc = Inc*resolution
+    console.log('resolution: ' + resolution)
+    latInc = Inc * resolution
     clearM()
     const coords = map.getView().getCenter()
     lat = coords[1]
@@ -372,39 +379,39 @@ function changeCoord() {
     z = map.getView().getZoom()
     const locUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon + "&zoom=" + Math.round(z)
     fetch(locUrl)
-    .then(function (response) {
-        return response.json()
-    })
-    .then(function (data) {
-        try {
-            //Extract city at map's zoom level.
-            city = city.substring(0, city.indexOf(","))
-            city = data.display_name.substring(data.display_name.indexOf(",") + 1)
-            if (city == "") {
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            try {
+                //Extract city at map's zoom level.
+                city = city.substring(0, city.indexOf(","))
+                city = data.display_name.substring(data.display_name.indexOf(",") + 1)
+                if (city == "") {
+                    city = "Unnamed location"
+                }
+            }
+            catch {
                 city = "Unnamed location"
             }
-        }
-        catch {
-            city = "Unnamed location"
-        }
-        try {
-            //Extract zip if present.
-            const matches = data.display_name.match(/\b\d{5}\b/g)
-            //Checks if zip is found.
-            if (matches) {
-                zip = matches[0]
-            } else {
+            try {
+                //Extract zip if present.
+                const matches = data.display_name.match(/\b\d{5}\b/g)
+                //Checks if zip is found.
+                if (matches) {
+                    zip = matches[0]
+                } else {
+                    zip = "?????"
+                }
+            }
+            catch {
                 zip = "?????"
             }
-        }
-        catch {
-            zip = "?????"
-        }
-        locZip.value = zip
-        //Erase previous map and recreate map div.    
-        zoomLevel = z
-        drawGrid(lat, lon, gridSize, city)
-    })
+            locZip.value = zip
+            //Erase previous map and recreate map div.    
+            zoomLevel = z
+            drawGrid(lat, lon, gridSize, city)
+        })
         .catch(function () {
             clearM()
             zoomLevel = z
