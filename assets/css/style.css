@@ -25,12 +25,38 @@
     z-index:2;
 
 }
-#wait{
-    position:absolute;
+@keyframes waiting{
+    0%{background-image: url('../images/patience.png');}
+    25%{background-image: url('../images/patience1.png');}
+    60%{background-image: url('../images/patience2.png');}
+    100%{background-image: url('../images/patience3.png');}
+    
+   
+}
+#wait1{
+    height:600px;
+    width:600px;
     top: 0;
     left: 0;
     z-index:1;
+    position:absolute;
+    background-image: url('../images/patience.png');
+    
+   
 
+}
+#wait2{
+    height:600px;
+    width:600px;
+    top: 0;
+    left: 0;
+    z-index:2;
+    position:absolute;
+    animation-name:waiting;
+    animation-duration:2s;
+    animation-iteration-count: infinite;
+    
+   
 
 }
 
