@@ -20,8 +20,8 @@ let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldS
   345
   012*/
 //DOM element declarations.
-const overlayContainerEl = document.querySelector('.overlay-info')
-const popupInfo = document.querySelector('.overlay-text')
+const overlayContainerEl = document.querySelector('.ol-popup')
+const popupInfo = document.querySelector('.ol-popup-closer')
 const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
 const locZip = document.getElementById("enterZip")

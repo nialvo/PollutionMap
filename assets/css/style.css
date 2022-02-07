@@ -15,27 +15,27 @@
 }
 
 #overlayContainer{
-
     position:relative;
 }
+
 #disp{
     position:absolute;
     top: 0;
     left: 0;
     z-index:2;
-
 }
+
 #wait{
     position:absolute;
     top: 0;
     left: 0;
     z-index:1;
-
-
 }
 
 .map {
+    border: white 5px solid;
     height: 600px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     width: 600px;  
     margin:auto;  
 }
@@ -43,15 +43,18 @@
 #info{
     height:45px;  
 }
+
 #infobox{
     width: 600px; 
     display:flex;
     justify-content:left;
 }
+
 #box{
     display:flex;
     justify-content:center;
 }
+
 .boxlet1{
     height:500px;
     width:100px;
@@ -59,20 +62,25 @@
     flex-direction:column;
     justify-content:center;
 }
+
 .boxlet1 button{
     font-size:25px;
     text-align:center;
 }
+
 .boxlet3{
     margin-left:50px;
 }
+
 .TitleWrap{
     text-align:center;
 
 }
+
 #previous,#localLevels{
     width:500px;
 }
+
 #localLevels, #previous{
     border: 5px solid rgba(34, 64, 163, 0.616);
     border-radius:3px
@@ -85,14 +93,12 @@
 #levelsContent{
     display:flex;
     flex-wrap:flex;
-    justify-content:space-evenly;
-    
-    
+    justify-content:space-evenly;    
 }
+
 #Zin,#Zout{
     height:30px;
     width:30px;
-
 }
 
 #info {
@@ -101,13 +107,51 @@
     background-color: rgb(220, 226, 233);
     border: 1px solid rgb(3, 38, 48);
     border-radius:5px;
-    visibility:hidden;
-    
-    
+    visibility:hidden;  
 }
 
 #feature-info {
     font-size: 15px;
 }
 
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    text-align: center;
+    width: 120px;
+}
 
+.ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+
+.ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+
+sub {
+    font-size: xx-small; 
+    vertical-align: sub;
+}
