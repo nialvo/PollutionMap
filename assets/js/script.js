@@ -30,8 +30,6 @@ var disp = document.getElementById("disp");
 //Map buttons.
 const OK = document.getElementById("ok")
 OK.addEventListener("click", changeZip)
-const HERE = document.getElementById("here")
-HERE.addEventListener("click", changeCoord)
 //localStorage HTML elements.
 var HDISP = document.getElementById("displayedSearches")
 var fs = 0;//index of first stored element to display
@@ -92,7 +90,7 @@ function start() {
 
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
-        console.log("Nooo")
+        console.log("ERROR: BAD IP FETCH")
     })
 }
 //Initial grid draw.
@@ -117,7 +115,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
             fetch(pollutionUrl).then(function (response) {
                 return response.json()
             }).catch(function () {
-                console.log("NO RESPONSE")
+                console.log("ERROR: NO RESPONSE")
             }).then(function (data) {
                 //If we are at central point, display pollution levels of the point in 'llTitle'.
                 if (i == half && j == half) {
@@ -191,7 +189,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         return greyStyle
                     })
                     p++
-                    console.log("NO DATA FOUND FOR CIRCLE")
+                    console.log("ERROR: NO DATA FOUND FOR CIRCLE")
                 })
                 .then(function () {
                     //If we are at final point(p^2) draw map.
@@ -208,7 +206,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         })
                         let T
                         function dragTrig() {
-                            console.log("DRAAAAAG")
                             clearTimeout(T)
                             T = setTimeout(changeCoord, 750)
                         }
@@ -277,7 +274,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 //Sets circle color to highlighted version of current color.                             
                                 feature.setStyle(function (feature, resolution) {
                                     highlightStyle.getImage().getFill().setColor(pixelAtCoords)
-                                    console.log(highlightStyle.getImage().getFill().getColor())
                                     highlightStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
                                     return highlightStyle
                                 })
@@ -296,7 +292,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         })
                         //Once map is finished rendering, check points to remove points on water.
                         map.once('rendercomplete', function () {
-                            console.log(map.getView().getResolutionForZoom(7))
                             for (let each in features) {
                                 features[each].getGeometry().transform('EPSG:3857', 'EPSG:4326')
                                 let coords = features[each].getGeometry().getCoordinates()
@@ -306,7 +301,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         map.getView().on("change:center",dragTrig)
                         map.addOverlay(popup)
                         OK.addEventListener("click", changeZip)
-                        HERE.addEventListener("click", changeCoord)
                     }
                 })
         }
@@ -338,7 +332,6 @@ function isWater(coords) {
 //change zip code when user adds zip code and clicks SUMBIT
 function changeZip() {
     OK.removeEventListener("click", changeZip)
-    HERE.removeEventListener("click", changeCoord)
     let resolution = map.getView().getResolution()
     latInc = Inc * resolution
     zoomLevel = map.getView().getZoom()
@@ -368,9 +361,7 @@ function changeZip() {
 //Changes central coordinates to current center of map, and changes feature size according to new zoomLevel.
 function changeCoord() {
     OK.removeEventListener("click", changeZip)
-    HERE.removeEventListener("click", changeCoord)
     let resolution = map.getView().getResolution()
-    console.log('resolution: ' + resolution)
     latInc = Inc * resolution
     clearM()
     const coords = map.getView().getCenter()
@@ -419,7 +410,7 @@ function changeCoord() {
             drawGrid(lat, lon, gridSize, city)
             city = "???"
             zip = "?????"
-            console.log("ERROR CHANGING LOCATION")
+            console.log("ERROR: UNABLE TO CHANGE LOCATION")
         })
 }
 //Clears last map and creates new map div for new search.
