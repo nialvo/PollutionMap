@@ -321,11 +321,11 @@ function isWater(coords) {
     let not_blues = 0
     const startX = xy[0] - Math.floor(width / 2)
     const startY = xy[1] - Math.floor(height / 2)
-    for (vert = 0; vert < height; vert+=3) {
-        for (hor = 0; hor < width; hor+=3) {
+    for (let vert = 0; vert < height; vert+=8) {
+        for (let hor = 0; hor < width; hor+=8) {
             xy = [hor + startX, vert + startY]
             let pixelAtXY = canvasContext.getImageData(xy[0], xy[1], 1, 1).data
-            for (i = 0; i < blue.length; i++) {
+            for (let i = 0; i < blue.length; i++) {
                 if (blue[i] !== pixelAtXY[i]) {
                     not_blues++
                     break
@@ -333,7 +333,7 @@ function isWater(coords) {
             }
         }
     }
-    return not_blues <= width * height * .09
+    return not_blues < 3
 }
 //change zip code when user adds zip code and clicks SUMBIT
 function changeZip() {
