@@ -25,6 +25,12 @@
 
 #overlayContainer{
     position:relative;
+    margin-left:1px;
+    border: white 5px solid;
+    height: 600px;
+    width:600px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+
 }
 
 #disp{
@@ -95,9 +101,8 @@
 }
 
 .map {
-    border: white 5px solid;
     height: 600px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    
     width: 600px;  
     margin:auto;  
 }
@@ -114,7 +119,7 @@
 
 #box{
     display:flex;
-    justify-content:center;
+    flex-wrap:wrap;
 }
 #btw{
     display:flex;
@@ -124,7 +129,7 @@
 
 
 .boxlet3{
-    margin-left:50px;
+    margin-left:10px;
 }
 
 
