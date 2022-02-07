@@ -144,7 +144,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         llContent.children[m].textContent = ""
                     }
                     let z = 0;
-                    let xx=0;
+                    let xx = 0;
 
                     let sstr = "";
                     for (const potype of pollTypes) {
@@ -152,12 +152,11 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             llContent.children[z].innerHTML = pollNames[xx] + ": " + data.data.iaqi[potype].v
                             sstr = sstr + llContent.children[z].innerHTML + "&nbsp&nbsp&nbsp"
                             z++
-
                         }
                         xx++;
                     }
-                    if(sstr.length==0){
-                        sstr="no data"
+                    if (sstr.length == 0) {
+                        sstr = "no data"
                         llContent.children[0].innerHTML = "no data"
                     }
                     //Logs the central point to localStorage.
@@ -181,14 +180,14 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 })
                 //Applies an id of 'color' to each point with no data.
                 let str = "";
-                let zz=0;
+                let zz = 0;
                 for (const ptype of pollTypes) {
                     if (ptype in data.data.iaqi) {
                         str = str + pollNames[zz] + ": " + data.data.iaqi[ptype].v + "<br>";
                     }
                     zz++
                 }
-                str = str.slice(0,-4);
+                str = str.slice(0, -4);
                 features[p].set('id', str)
                 features[p].setStyle(colorStyle)
                 //Applies dynamic size adjustment to each feature.
@@ -234,9 +233,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             updateWhileInteracting: true,
                             opacity: 0.5
                         })
-                        
-                        
-                        
                         //Draw map centered on given coordinates.
                         map = new ol.Map({
                             target: 'map',
@@ -259,7 +255,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     const feature = features.length ? features[0] : undefined
                                     if (feature !== highlight) {
                                         if (highlight) {
-                                            popupInfo.innerHTML = ''
                                             overlayContainerEl.setAttribute("style", "visibility:hidden")
                                         }
                                         if (feature) {
@@ -305,6 +300,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     highlightStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
                                     return highlightStyle
                                 })
+                                //Grabs coordinates of selected feature and sets popup to center coordinates.
                                 let clickedCoordinate = feature.A.geometry.flatCoordinates
                                 let clickedInfo = feature.get('id')
                                 popup.setPosition(clickedCoordinate)
@@ -318,7 +314,51 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             element: overlayContainerEl,
                             zIndex: 1
                         })
-                        
+                        map.on('click', function (evt) {
+                            //If there is no dragging, then displayFeatureInfo runs
+                            if (evt.dragging) return
+                            if (selectedFeat) {
+                                selectedFeat.setStyle(oldStyle)
+                                pixelAtCoords = ''
+                            }
+                            selectedFeat = undefined
+                            const pixel = map.getEventPixel(evt.originalEvent)
+                            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                                let oldFill = feature.getStyle()
+                                let coords = feature.getGeometry().getCoordinates()
+                                let pixelCoords = map.getPixelFromCoordinate(coords)
+                                let canvasContext = document.querySelectorAll('canvas')[1].getContext('2d')
+                                pixelAtCoords = canvasContext.getImageData(pixelCoords[0], pixelCoords[1], 1, 1).data
+                                pixelAtCoords = Array.prototype.slice.call(pixelAtCoords)
+                                //Highlight version of colorStyle circle for hit detection
+                                let highlightStyle = new ol.style.Style({
+                                    image: new ol.style.Circle({
+                                        radius: 15,
+                                        fill: new ol.style.Fill({
+                                            color: [200, 100, 50, 100]
+                                        }),
+                                        stroke: new ol.style.Stroke({
+                                            color: '#0000e6',
+                                            width: 3
+                                        })
+                                    })
+                                })
+                                //Sets circle color to highlighted version of current color.                             
+                                feature.setStyle(function (feature, resolution) {
+                                    highlightStyle.getImage().getFill().setColor(pixelAtCoords)
+                                    highlightStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
+                                    return highlightStyle
+                                })
+                                //Grabs coordinates of selected feature and sets popup to center coordinates.
+                                let clickedCoordinate = feature.A.geometry.flatCoordinates
+                                let clickedInfo = feature.get('id')
+                                popupInfo.innerHTML = clickedInfo
+                                popup.setPosition(clickedCoordinate)
+                                oldStyle = oldFill
+                                selectedFeat = feature
+                            })
+                            displayFeatureInfo(pixel)
+                        })
                         //Once map is finished rendering, check points to remove points on water.
                         map.once('rendercomplete', function () {
                             for (let each in features) {
@@ -339,6 +379,7 @@ function isWater(coords) {
     const blue = [170, 211, 223]
     var xy = map.getPixelFromCoordinate(coords)
     var canvasContext = document.querySelector('canvas').getContext('2d')
+    //Checks four corners of a 9x9 pixel area to detect if feature is potentially over a body of water.
     let width = 9, height = 9
     let not_blues = 0
     const startX = xy[0] - Math.floor(width / 2)
@@ -355,6 +396,7 @@ function isWater(coords) {
             }
         }
     }
+    //If three or more pixels are blue, returns true. 
     return not_blues < 3
 }
 //change zip code when user adds zip code and clicks SUMBIT
@@ -427,7 +469,7 @@ function changeCoord() {
             catch {
                 zip = ""
             }
-            
+
             locZip.value = zip
             //Erase previous map and recreate map div.    
             zoomLevel = z
@@ -458,7 +500,6 @@ function displaySearches(index) {
     else {
         PREV.setAttribute("style", "visibility:visible")
     }
-
     if (storedSearches[0].length - index < 4) {
         let w = 0
         for (let v = index; v < storedSearches[0].length; v++) {
