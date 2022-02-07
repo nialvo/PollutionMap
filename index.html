@@ -11,46 +11,56 @@
 
 <body>
     <div class="menu">
+        <div id ="logoC">
+            <img src="././assets/images/TranspCenterLogo.png" alt="logo" id="logo">
+        </div>
         
-        <h3>Enter a zip code or scroll the map to see air pollution levels for different locations</h3>
-        <form>
-            <label for="zip">Zip Code:</label><br>
-            <input type="text" id="enterZip" name="zip"><br>
-        </form>
-        <button type="button" id="ok">Search this Zip</button><br>
     </div>
     <div id="box">
         
-        <div class="boxlet2">
-            <div class="TitleWrap">
-                <h2>PM 2.5 levels</h2>
-            </div>
+        <div id="boxlet2">
+            
+            
             <div id="overlayContainer">
                 <div id="disp">
                     <div id="map" class="map"></div>
                 </div>
                 <div id="wait1"></div>
                 <div id="wait2"></div>
+                <div id="mapTitleWrap">
+                    <div>PM <sub>2.5</sub> levels</div>
+                </div>
+
             </div>
 
-            <div id="infobox">
-
-            </div>
+            <div id="infobox"></div>
         </div>
         <div class="boxlet3">
+            <div id="zipC">
+                <form>
+                    <label for="zip">Zip Code:</label><br>
+                    <input type="text" id="enterZip" name="zip"><br>
+                </form>
+                <button type="button" id="ok">Search this Zip</button><br>
+            </div>
+
             <br>
             <div id="localLevels">
                 <div class="TitleWrap">
                     <h2 id="levelsTitle"></h2>
                 </div> 
                 <div id="levelsContent">
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+
+                </div>
+                <div id="btw">
+                    <p>last available measurements in &#x3BCg/m<sup>3</sup> </p>
                 </div>
             </div>
             <br>
