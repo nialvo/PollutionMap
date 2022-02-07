@@ -30,7 +30,11 @@ locZip.value = ""
 var disp = document.getElementById("disp");
 //Map buttons.
 const OK = document.getElementById("ok")
-OK.addEventListener("click", changeZip)
+OK.addEventListener("click", event => {
+    console.log(locZip.value.length)
+    if (locZip.value.length !== 5) return
+    changeZip()
+})
 //localStorage HTML elements.
 var HDISP = document.getElementById("displayedSearches")
 var fs = 0;//index of first stored element to display
@@ -41,6 +45,12 @@ NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 var T;
+
+overlayContainerEl.style.display = "none"
+
+locZip.addEventListener("keydown", event => {
+    return handleInput(locZip, event)
+})
 
 if (localStorage.getItem('place7896') == null) {
     var storedSearches = [[], []];
@@ -93,6 +103,14 @@ function start() {
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
+        lat = 34.07440
+        lon = -117.40499
+        zip = "90210"
+        city = "Beverley Hills"
+
+        locZip.value = zip
+
+        drawGrid(lat, lon, gridSize, city)
     })
 }
 //Initial grid draw.
@@ -300,6 +318,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             element: overlayContainerEl,
                             zIndex: 1
                         })
+                        
                         //Once map is finished rendering, check points to remove points on water.
                         map.once('rendercomplete', function () {
                             for (let each in features) {
@@ -308,9 +327,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
                         })
-                        map.getView().on("change:center",dragTrig)
+                        map.getView().on("change:center", dragTrig)
                         map.addOverlay(popup)
-                        OK.addEventListener("click", changeZip)
                     }
                 })
         }
@@ -325,8 +343,8 @@ function isWater(coords) {
     let not_blues = 0
     const startX = xy[0] - Math.floor(width / 2)
     const startY = xy[1] - Math.floor(height / 2)
-    for (let vert = 0; vert < height; vert+=8) {
-        for (let hor = 0; hor < width; hor+=8) {
+    for (let vert = 0; vert < height; vert += 8) {
+        for (let hor = 0; hor < width; hor += 8) {
             xy = [hor + startX, vert + startY]
             let pixelAtXY = canvasContext.getImageData(xy[0], xy[1], 1, 1).data
             for (let i = 0; i < blue.length; i++) {
@@ -403,12 +421,13 @@ function changeCoord() {
                 if (matches) {
                     zip = matches[0]
                 } else {
-                    zip = "?????"
+                    zip = ""
                 }
             }
             catch {
-                zip = "?????"
+                zip = ""
             }
+            
             locZip.value = zip
             //Erase previous map and recreate map div.    
             zoomLevel = z
