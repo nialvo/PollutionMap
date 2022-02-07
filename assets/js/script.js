@@ -318,21 +318,22 @@ function isWater(coords) {
     var xy = map.getPixelFromCoordinate(coords)
     var canvasContext = document.querySelector('canvas').getContext('2d')
     let width = 9, height = 9
-    let blues = 0
+    let not_blues = 0
     const startX = xy[0] - Math.floor(width / 2)
     const startY = xy[1] - Math.floor(height / 2)
-    for (vert = 0; vert < height; vert++) {
-        for (hor = 0; hor < width; hor++) {
+    for (vert = 0; vert < height; vert+=3) {
+        for (hor = 0; hor < width; hor+=3) {
             xy = [hor + startX, vert + startY]
             let pixelAtXY = canvasContext.getImageData(xy[0], xy[1], 1, 1).data
             for (i = 0; i < blue.length; i++) {
                 if (blue[i] !== pixelAtXY[i]) {
-                    blues++
+                    not_blues++
+                    break
                 }
             }
         }
     }
-    return blues <= width * height * 2.5
+    return not_blues <= width * height * .09
 }
 //change zip code when user adds zip code and clicks SUMBIT
 function changeZip() {
