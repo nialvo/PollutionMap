@@ -7,6 +7,7 @@ let lon, lat, zip, city
 const gridSize = 9
 //Available pollution types.
 const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
+const pollNames = ["PM<sub>2.5</sub>", "NO<sub>2</sub>", "CO", "SO<sub>2</sub>", "NH<sub>3</sub>", "O<sub>3</sub>", "PM<sub>10</sub>"]
 //Increment
 const Inc = 43.6906666666666
 //These three must change with zoom, or first two musy change when user changes zoom.
@@ -43,6 +44,7 @@ var NEXT = document.getElementById("seeNext")
 NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
+var T;
 
 overlayContainerEl.style.display = "none"
 
@@ -141,15 +143,22 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     for (let m = 0; m < 7; m++) {
                         llContent.children[m].textContent = ""
                     }
-                    z = 0;
+                    let z = 0;
+                    let xx=0;
+
                     let sstr = "";
                     for (const potype of pollTypes) {
                         if (potype in data.data.iaqi) {
-                            llContent.children[z].textContent = potype + ": " + data.data.iaqi[potype].v
-                            sstr = sstr + llContent.children[z].textContent + "  "
+                            llContent.children[z].innerHTML = pollNames[xx] + ": " + data.data.iaqi[potype].v
+                            sstr = sstr + llContent.children[z].innerHTML + "&nbsp&nbsp&nbsp"
                             z++
 
                         }
+                        xx++;
+                    }
+                    if(sstr.length==0){
+                        sstr="no data"
+                        llContent.children[0].innerHTML = "no data"
                     }
                     //Logs the central point to localStorage.
                     storedSearches[0].push(city + " " + zip)
@@ -171,12 +180,15 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     })
                 })
                 //Applies an id of 'color' to each point with no data.
-                let str = "Here:  \n  ";
+                let str = "";
+                let zz=0;
                 for (const ptype of pollTypes) {
                     if (ptype in data.data.iaqi) {
-                        str = str + ptype + ": " + data.data.iaqi[ptype].v + "   \n  ";
+                        str = str + pollNames[zz] + ": " + data.data.iaqi[ptype].v + "<br>";
                     }
+                    zz++
                 }
+                str = str.slice(0,-4);
                 features[p].set('id', str)
                 features[p].setStyle(colorStyle)
                 //Applies dynamic size adjustment to each feature.
@@ -222,11 +234,9 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             updateWhileInteracting: true,
                             opacity: 0.5
                         })
-                        let T
-                        function dragTrig() {
-                            clearTimeout(T)
-                            T = setTimeout(changeCoord, 750)
-                        }
+                        
+                        
+                        
                         //Draw map centered on given coordinates.
                         map = new ol.Map({
                             target: 'map',
@@ -452,8 +462,8 @@ function displaySearches(index) {
     if (storedSearches[0].length - index < 4) {
         let w = 0
         for (let v = index; v < storedSearches[0].length; v++) {
-            HDISP.children[w].children[0].textContent = storedSearches[0][v]
-            HDISP.children[w].children[1].textContent = storedSearches[1][v]
+            HDISP.children[w].children[0].innerHTML = storedSearches[0][v]
+            HDISP.children[w].children[1].innerHTML = storedSearches[1][v]
             w++
         }
         NEXT.setAttribute("style", "visibility:hidden")
@@ -461,8 +471,8 @@ function displaySearches(index) {
     else {
         let w = 0
         for (let v = index; v < index + 3; v++) {
-            HDISP.children[w].children[0].textContent = storedSearches[0][v]
-            HDISP.children[w].children[1].textContent = storedSearches[1][v]
+            HDISP.children[w].children[0].innerHTML = storedSearches[0][v]
+            HDISP.children[w].children[1].innerHTML = storedSearches[1][v]
             w++
         }
         NEXT.setAttribute("style", "visibility:visible")
@@ -504,4 +514,9 @@ function eraseSearchDisplay() {
         HDISP.children[v].children[0].textContent = ""
         HDISP.children[v].children[1].textContent = ""
     }
+}
+//trigger new grid when user stops scrolling
+function dragTrig() {
+    clearTimeout(T)
+    T = setTimeout(changeCoord, 1250)
 }
