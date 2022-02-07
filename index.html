@@ -17,8 +17,7 @@
             <label for="zip">Zip Code:</label><br>
             <input type="text" id="enterZip" name="zip"><br>
         </form>
-        <button type="button" id="ok">Search this Zip</button><br>
-        <button type="button" id="here">Search this map location</button>
+        <<button type="button" id="ok">Search this Zip</button><br>
     </div>
     <div id="box">
         <div class="boxlet1">
@@ -34,8 +33,9 @@
                 <div id="disp">
                     <div id="map" class="map"></div>
                 </div>
-                <div id="wait1"></div>
-                <div id="wait2"></div>
+                <div id="wait">
+                    <img src="./assets/images/patience.png" alt="waiting image">
+                </div>
             </div>
 
             <div id="infobox">
@@ -90,8 +90,8 @@
 
     
 
-    <div class='overlay-info' id="info">
-        <span class ='overlay-text' id='feature-info'></span><br>
+    <div class='ol-popup' id="popup">
+        <span class ='ol-popup-closer' id='popup-closer'></span><br>
     </div>
 
     <script type="text/javascript" src="./assets/js/script.js"></script>
