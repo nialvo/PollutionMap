@@ -218,18 +218,13 @@ sub {
         position: relative;
     } 
 }
-@media screen and (min-height: 835px) {
-    .ourFooter {
-        position: absolute;
-    } 
-}
 
 @media screen and (max-width: 1139px){
     .ourFooter {
         position: relative;
     }  
 }
-@media screen and (min-width: 1140px){
+@media screen and (min-width: 1140px) and (min-height:835px){
     .ourFooter {
         position: absolute;
     }  
