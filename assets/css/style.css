@@ -48,7 +48,7 @@ canvas {
     z-index:1;
     position:absolute;
     background-image: url('../images/patience.png');
-    
+    object-fit:contain;
    
 
 }
@@ -62,7 +62,7 @@ canvas {
     animation-name:waiting;
     animation-duration:2s;
     animation-iteration-count: infinite;
-    
+    object-fit:contain;
    
 
 }
@@ -81,10 +81,10 @@ canvas {
     font-size:15px;
 }
 
-.map {
+#map {
     height: 600px;
+    width: 600px;
     
-    width: 600px;  
     /*margin:auto;  */
 }
 
@@ -108,13 +108,12 @@ canvas {
     display:flex;
     justify-content: flex-end;
 }
-/*
+
 #boxlet2{
-    margin-left:100px;
+    margin-left:10px;
     margin-right:10px;
-    margin-bottom:10px;
-    margin-top:0px
-}*/
+   
+}
 
 
 .boxlet3{
@@ -238,3 +237,35 @@ sub {
     }
 }
 */
+
+
+@media screen and (max-width:620px){
+    #overlayContainer, #map, #wait1, #wait2, #boxlet2{
+        
+        height:500px;
+        width:500px;
+        
+    }
+    
+
+}
+@media screen and (max-width:520px){
+    #overlayContainer, #map, #wait1, #wait2,#boxlet2{
+        
+        height:400px;
+        width:400px;
+        
+    }
+    
+
+}
+@media screen and (max-width:420px){
+    #overlayContainer, #map, #wait1, #wait2,#boxlet2{
+        
+        height:300px;
+        width:300px;
+        
+    }
+    
+
+}
