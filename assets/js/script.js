@@ -275,6 +275,9 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 isMouseDown = undefined
                             }
                         })
+                        document.addEventListener('touchend', function(event) {
+                            event.preventDefault()
+                          })
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             //If there is no dragging, then displayFeatureInfo runs
