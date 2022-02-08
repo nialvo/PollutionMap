@@ -101,7 +101,7 @@ canvas {
     justify-content: flex-end;
 }
 
-#boxlet2{
+.boxlet2{
     margin-left:10px;
     margin-right:10px;
    
@@ -114,14 +114,8 @@ canvas {
     margin-top:45px
 }
 
-
-
 #previous,#localLevels{
     width:500px;
-}
-
-#localLevels, #previous{
-    width: 500px;
 }
 
 #levelsContent p{
@@ -218,6 +212,16 @@ sub {
         position: relative;
     } 
 }
+@media screen and (max-width: 1159px){
+    .boxlet3 {
+        margin-left: auto;
+    }
+}
+@media screen and (max-width: 1119px){
+    .boxlet3 {
+        margin-left: 0;
+    }
+}
 
 @media screen and (max-width: 1139px){
     .ourFooter {
@@ -230,9 +234,21 @@ sub {
     }  
 }
 @media screen and (max-width:620px){
-    #overlayContainer, #map, #wait1, #wait2, #boxlet2{     
+    .boxlet3 {
+        margin-top: 80px;
+    }
+    #overlayContainer, #map, #wait1, #wait2, .boxlet2, #previous,#localLevels,#prevNav{     
         height:500px;
         width:500px;    
+    }
+    #previous {
+        height: 430px;
+    }
+    #localLevels {
+        height: auto;
+    }
+    .ourFooter {
+        position: fixed;
     }
     .ol-popup {
         font-size:12.5;
@@ -242,9 +258,15 @@ sub {
     }
 }
 @media screen and (max-width:520px){
-    #overlayContainer, #map, #wait1, #wait2,#boxlet2{    
+    #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels,#prevNav{    
         height:400px;
         width:400px;      
+    }
+    #localLevels {
+        height: auto;
+    }
+    #eraseSearches {
+        right: -182px;
     }
     .ol-popup {
         font-size:10px;
@@ -254,9 +276,18 @@ sub {
     }
 }
 @media screen and (max-width:420px){
-    #overlayContainer, #map, #wait1, #wait2,#boxlet2{       
-        height:300px;
+    #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav{       
+        height: 300px;
         width:300px;        
+    }
+    #localLevels {
+        height: auto;
+    }
+    #previous {
+        height: 430px;
+    }
+    #eraseSearches {
+        right: -82px;
     }
     .ol-popup {
         font-size:7.5;
