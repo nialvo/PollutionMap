@@ -1,6 +1,9 @@
 *{
     font-family:sans-serif;    
 }
+canvas {
+    touch-action: none;
+}
 
 .menu{
     background-color:rgb(236, 188, 29);

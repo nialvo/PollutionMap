@@ -46,6 +46,13 @@ var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 var T;
 
+document.addEventListener('touchstart', function(event) {
+    event.preventDefault()
+  })
+document.addEventListener('touchend', function(event) {
+    event.preventDefault()
+  })
+
 overlayContainerEl.style.display = "none"
 
 locZip.addEventListener("keydown", event => {
@@ -264,23 +271,17 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     }
                                 })
                         }
-                        disp.children[0].addEventListener('pointerdown', function () {
+                        disp.children[0].addEventListener('mousedown', function () {
                             isMouseDown = true
                             if (isMouseDown == true) dragTrig()
                         })
-                        document.addEventListener('pointerup', function () {
+                        document.addEventListener('mouseup', function () {
                             if (isMouseDown == true) isMouseDown = false
                             if (isMouseDown == false) {
                                 dragTrig()
                                 isMouseDown = undefined
                             }
                         })
-                        document.addEventListener('touchstart', function(event) {
-                            event.preventDefault()
-                          })
-                        document.addEventListener('touchend', function(event) {
-                            event.preventDefault()
-                          })
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             //If there is no dragging, then displayFeatureInfo runs
