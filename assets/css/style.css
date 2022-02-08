@@ -189,14 +189,11 @@ sub {
     position:relative;
 }
 #seePrev{
-    left:10px;
+    left:330px;
+}
 
-}
-#seeNext{
-    left:10px;
-}
 #eraseSearches{
-    right:-282px;
+    margin: auto;
 }
 #previous{
     top:25px;
@@ -262,12 +259,13 @@ sub {
         height:400px;
         width:400px;      
     }
+    #seePrev{
+        left:230px;
+    }
     #localLevels {
         height: auto;
     }
-    #eraseSearches {
-        right: -182px;
-    }
+
     .ol-popup {
         font-size:10px;
     }
@@ -280,15 +278,16 @@ sub {
         height: 300px;
         width:300px;        
     }
+    #seePrev{
+        left:130px;
+    }
     #localLevels {
         height: auto;
     }
     #previous {
-        height: 430px;
+        height: 450px;
     }
-    #eraseSearches {
-        right: -82px;
-    }
+
     .ol-popup {
         font-size:7.5;
     }
