@@ -15,7 +15,6 @@ var RAD;
 var widthP;
 var sizer = document.getElementById("overlayContainer");
 widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
-console.log(widthP)
 var Inc = orInc;
 //These three must change with zoom, or first two musy change when user changes zoom.
 let lonInc
@@ -48,14 +47,20 @@ NEXT.addEventListener("click", seeNext)
 const ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 overlayContainerEl.style.display = "none"
+document.addEventListener('keypress', function (e) {
+    if (e.code == 'Enter' || e.key === 'Enter') {
+        e.preventDefault()
+        return false
+    }
+})
 if (localStorage.getItem('place7896') == null) {
-    let storedSearches = [[], []]
+    var storedSearches = [[], []]
     for (let v = 0; v < 3; v++) {
         HDISP.children[v].children[0].textContent = ""
         HDISP.children[v].children[1].textContent = ""
     }
     displaySearches(fs)
-} 
+}
 else {
     var storedSearches = [JSON.parse(localStorage.place7896), JSON.parse(localStorage.levels7896)]
     displaySearches(fs)
@@ -99,7 +104,6 @@ function start() {
             city = "Beverley Hills"
         }
         locationInput.value = zip
-        
         widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600)
         latInc = Inc * widthP *0.010986328125
         RAD = radC*widthP
@@ -278,7 +282,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         disp.children[0].addEventListener('touchend', function (event) {
                             event.preventDefault()
                         })
-
                         document.addEventListener('mouseup', function () {
                             if (isMouseDown == true) isMouseDown = false
                             if (isMouseDown == false) {
@@ -406,7 +409,6 @@ function getLocationData() {
         url = "https://api.waqi.info/feed/geo:" + arguments[1] + ";" + arguments[0] + "/?token=" + AQkey
     }
     else {
-        console.log(arguments[0])
         url = "https://nominatim.openstreetmap.org/search?q=" + arguments[0] + "&country=USA&format=json"
     }
     return fetch(url)
@@ -427,12 +429,10 @@ function getLocationData() {
                         imp_i = i
                     }
                 }
-                console.log(imp_i)
                 return data[imp_i]
             }
             if (data.status !== "ok") return
             data.data.lonLat = [arguments[0], arguments[1]]
-            console.log(data.data)
             return data.data
         })
 }
@@ -451,7 +451,6 @@ function goToLocation(lat, lon, min, max) {
     OK.removeEventListener("click", myFunction)
     if (!map) return
     let points = [min, max, [max[0], min[1]], [min[0], max[1]]]
-    console.log(points)
     let geo = new ol.geom.Polygon([points], "XY")
     clearM()
     map.getView().fit(geo)
