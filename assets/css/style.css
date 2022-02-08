@@ -1,0 +1,272 @@
+*{
+    font-family:sans-serif;    
+}
+canvas {
+    touch-action: none;
+}
+
+.ourFooter {
+    margin-top: 100px;
+    bottom: 0;
+    position: absolute;
+    padding-top: 10px;
+    border-top: #FFE08A 5px solid;
+    width: 100%;
+    margin-bottom: 0;
+    background-color: white;
+}
+
+.menu{
+    background-color:white;
+    display:flex;
+    justify-content:center;   
+}
+
+#overlayContainer{
+    position:relative;
+    height: 600px;
+    width:600px;   
+}
+
+#disp{
+    position:absolute;
+    top: 0;
+    left: 0;
+    z-index:3;
+}
+
+@keyframes waiting{
+    0%{background-image: url('../images/patience.png');}
+    25%{background-image: url('../images/patience1.png');}
+    60%{background-image: url('../images/patience2.png');}
+    100%{background-image: url('../images/patience3.png');}      
+}
+#wait1{
+    height:600px;
+    width:600px;
+    top: 0;
+    left: 0;
+    z-index:1;
+    position:absolute;
+    background-image: url('../images/patience.png');
+    object-fit:contain;
+}
+#wait2{
+    height:600px;
+    width:600px;
+    top: 0;
+    left: 0;
+    z-index:2;
+    position:absolute;
+    animation-name:waiting;
+    animation-duration:2s;
+    animation-iteration-count: infinite;
+    object-fit:contain; 
+}
+
+#mapTitleWrap{
+    text-align:center;
+    top: 10px;
+    right: 15px;
+    z-index:4;
+    position:absolute;
+}
+#mapTitleWrap div{
+    font-size:20px;
+}
+#mapTitleWrap div sub{
+    font-size:15px;
+}
+
+#map {
+    height: 600px;
+    width: 600px;
+    
+    /*margin:auto;  */
+}
+
+#info{
+    height:45px;  
+}
+
+
+#box{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:15px;
+}
+#btw{
+    display:flex;
+    justify-content: flex-end;
+}
+
+#boxlet2{
+    margin-left:10px;
+    margin-right:10px;
+   
+}
+
+
+.boxlet3{
+    margin-left:40px;
+    
+    margin-top:45px
+}
+
+
+
+#previous,#localLevels{
+    width:500px;
+}
+
+#localLevels, #previous{
+    width: 500px;
+}
+
+#levelsContent p{
+    width:80px;
+}
+
+#levelsContent{
+    display:flex;
+    flex-wrap:flex;
+    justify-content:space-evenly;    
+}
+
+
+#info {
+    width: 65px;
+    height:auto;
+    background-color: rgb(220, 226, 233);
+    border: 1px solid rgb(3, 38, 48);
+    border-radius:5px;
+    visibility:hidden;  
+}
+
+#feature-info {
+    font-size: 12px;
+}
+
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    text-align: center;
+    font-size:15px;
+    width: 80px;
+}
+
+.ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+}
+
+.ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+}
+
+sub {
+    font-size: small; 
+    vertical-align: sub;
+}
+#prevNav{
+    width:500px;
+    position:relative;
+}
+#seePrev{
+    left:10px;
+
+}
+#seeNext{
+    left:10px;
+}
+#eraseSearches{
+    right:-282px;
+}
+#previous{
+    top:25px;
+}
+#displayedSearches{
+    left:200px;
+}
+.rDisp{
+    padding:10px;
+}
+@media screen and (max-height: 834px) {
+    .ourFooter {
+        position: relative;
+    } 
+}
+@media screen and (min-height: 835px) {
+    .ourFooter {
+        position: absolute;
+    } 
+}
+
+@media screen and (max-width: 1139px){
+    .ourFooter {
+        position: relative;
+    }  
+}
+@media screen and (min-width: 1140px){
+    .ourFooter {
+        position: absolute;
+    }  
+}
+@media screen and (max-width:620px){
+    #overlayContainer, #map, #wait1, #wait2, #boxlet2{     
+        height:500px;
+        width:500px;    
+    }
+    .ol-popup {
+        font-size:12.5;
+    }
+    .ol-popup sub{
+        font-size: x-small;
+    }
+}
+@media screen and (max-width:520px){
+    #overlayContainer, #map, #wait1, #wait2,#boxlet2{    
+        height:400px;
+        width:400px;      
+    }
+    .ol-popup {
+        font-size:10px;
+    }
+    .ol-popup sub{
+        font-size: x-small;
+    }
+}
+@media screen and (max-width:420px){
+    #overlayContainer, #map, #wait1, #wait2,#boxlet2{       
+        height:300px;
+        width:300px;        
+    }
+    .ol-popup {
+        font-size:7.5;
+    }
+    .ol-popup sub{
+        font-size: xx-small;
+    }   
+}
