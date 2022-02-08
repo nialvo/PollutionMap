@@ -92,11 +92,6 @@ canvas {
     height:45px;  
 }
 
-#infobox{
-    width: 600px; 
-    display:flex;
-    justify-content:left;
-}
 
 #box{
     display:flex;
@@ -160,7 +155,7 @@ canvas {
     position: absolute;
     background-color: white;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    padding: 15px;
+    padding: 5px;
     border-radius: 10px;
     border: 1px solid #cccccc;
     bottom: 12px;
@@ -246,6 +241,13 @@ sub {
         width:500px;
         
     }
+    .ol-popup {
+        font-size:12.5;
+    }
+    .ol-popup sub{
+        font-size: x-small;
+
+    }
     
 
 }
@@ -256,6 +258,13 @@ sub {
         width:400px;
         
     }
+    .ol-popup {
+        font-size:10px;
+    }
+    .ol-popup sub{
+        font-size: x-small;
+
+    }
     
 
 }
@@ -265,6 +274,13 @@ sub {
         height:300px;
         width:300px;
         
+    }
+    .ol-popup {
+        font-size:7.5;
+    }
+    .ol-popup sub{
+        font-size: xx-small;
+
     }
     
 
