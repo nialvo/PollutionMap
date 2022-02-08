@@ -2,8 +2,15 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/css/ol.css" type="text/css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
     <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/build/ol.js"></script>
     <script src="assets/js/other.js"></script>
@@ -11,18 +18,64 @@
 </head>
 
 <body>
-    <div class="menu">
-        <div id ="logoC">
-            <img src="././assets/images/TranspCenterLogo.png" alt="logo" id="logo">
-        </div>
-        
-    </div>
+    
+    <nav class="menu navbar-brand navbar is-warning " role="navigation" aria-label="main navigation">
+        <a class="navbar-item navbar-start" href="">
+          <img src="././assets/images/TranspCenterLogo.png" width="112" height="50"
+        /></a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              
+              <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Resources
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" href="https://aqicn.org/api/" target="_blank">
+                            Air Quality Index API
+                        </a>
+                        <a class="navbar-item" href="https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm" target="_blank">
+                            EPA page on PM<sub>2.5</sub> 
+                        </a>
+                        <a class="navbar-item" href="https://www.airnow.gov/aqi/aqi-basics/extremely-high-levels-of-pm25/" target="_blank">
+                            How to reduce exposure to PM<sub>2.5</sub> 
+                        </a>
+                    </div>
+                </div>
+      </nav>
+
     <div id="box">
         
-        <div id="boxlet2">
+        <div class="boxlet2">
+            <div class=" columns panel-block">
+                <div class="column is-half"></div>
+                <form>
+                  <!-- <label for="zip">Zip Code:</label><br /> -->
+                  <!-- added Bulma CSS formating for input format -->
+                    <input
+                        class="input is-info is-quarter"
+                        type="text"
+                        placeholder="Enter Location"
+                        id="enterZip"
+                        name="zip"
+                    />
+                </form>
+                
+                <!-- added Bulma formating CSS for Buttons -->
+                <button class="button is-info is-quarter " type="button" id="ok">Search Zip Code</button><br>
+                <!-- added Bulma formatting CSS for Buttons -->
+                <!--<button class="button is-link mx-auto" type="button" id="here">Search this map location</button>
+                 <h2>PM 2.5 levels</h2> -->
+            </div>
             
             
-            <div id="overlayContainer">
+            <div id="overlayContainer" class="card">
                 <div id="disp">
                     <div id="map" class="map"></div>
                 </div>
@@ -37,18 +90,15 @@
             <div id="infobox"></div>
         </div>
         <div class="boxlet3">
-            <div id="zipC">
-                <form>
-                    <label for="zip">Zip Code:</label><br>
-                    <input type="text" id="enterZip" name="zip"><br>
-                </form>
-                <button type="button" id="ok">Search this Zip</button><br>
-            </div>
+            
+            
+            
 
-            <br>
-            <div id="localLevels">
-                <div class="TitleWrap">
-                    <h2 id="levelsTitle"></h2>
+           
+            <div id="localLevels" class="card rDisp">
+                <div class="TitleWrap card-content">
+                    <h2 id="levelsTitle" class="content title is-5"></h2>
+                    <br>
                 </div> 
                 <div id="levelsContent">
                     <div></div>
@@ -60,17 +110,23 @@
                     <div></div>
 
                 </div>
+                <br>
                 <div id="btw">
                     <p>last available measurements in &#x3BCg/m<sup>3</sup> </p>
                 </div>
+                <br>
             </div>
-            <br>
-            <div id="previous">
-                <div class="TitleWrap">
-                    <h2>Previous Searches</h2>
+
+
+            
+            <div id="previous" class="card rDisp">
+                <div class="TitleWrap card-content">
+                    <h2 class="content title is-5">Previous Searches</h2>
                 </div>
+                
                 <div id="disp2">
-                    <button type="button" id="seePrev">Previous</button>
+                    <button type="button" class="button is-info mx-auto" id="seePrev">Back</button>
+                    <br><br>
                     <div id="displayedSearches">
                         <div>
                             <h3></h3>
@@ -85,10 +141,14 @@
                             <p></p>
                         </div>
                     </div>
-                    
-                    <button type="button" id="seeNext">Next</button>
+                    <br>
+                    <div id="prevNav">
+                        <button type="button" class="button is-info mx-auto" id="seeNext">Next</button>
+                        <button type="button" class="button is-info mx-6" id="eraseSearches">Clear</button>
+                        
+                    </div>
+                    <br><br>
                 </div>
-                <button type="button" id="eraseSearches">Erase Search History</button>
                 
             </div>
         </div>

@@ -3,34 +3,20 @@
 }
 
 .menu{
-    background-color:rgb(236, 188, 29);
+    background-color:white;
     display:flex;
     justify-content:center;
-    position:relative;
-    height:55px;
+    
+    
 }
-#logoC{
-    height:50px;
-    position:absolute;
-    left:10px;
-}
-#logo{
-    max-height:100%;
-    width:auto;
-}
-#zipC{
-    right:0;
-    display:inline;
-}
+
+
 
 #overlayContainer{
     position:relative;
-    margin-left:1px;
-    border: white 5px solid;
     height: 600px;
     width:600px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-
+    
 }
 
 #disp{
@@ -40,17 +26,8 @@
     z-index:3;
 }
 
-#overlayContainer{
 
-    position:relative;
-}
-#disp{
-    position:absolute;
-    top: 0;
-    left: 0;
-    z-index:3;
 
-}
 
 @keyframes waiting{
     0%{background-image: url('../images/patience.png');}
@@ -86,6 +63,7 @@
    
 
 }
+
 #mapTitleWrap{
     text-align:center;
     top: 10px;
@@ -104,7 +82,7 @@
     height: 600px;
     
     width: 600px;  
-    margin:auto;  
+    /*margin:auto;  */
 }
 
 #info{
@@ -120,16 +98,26 @@
 #box{
     display:flex;
     flex-wrap:wrap;
+    justify-content:center;
+    margin-top:15px;
 }
 #btw{
     display:flex;
     justify-content: flex-end;
 }
-
+/*
+#boxlet2{
+    margin-left:100px;
+    margin-right:10px;
+    margin-bottom:10px;
+    margin-top:0px
+}*/
 
 
 .boxlet3{
-    margin-left:10px;
+    margin-left:40px;
+    
+    margin-top:45px
 }
 
 
@@ -139,8 +127,7 @@
 }
 
 #localLevels, #previous{
-    border: 5px solid rgba(34, 64, 163, 0.616);
-    border-radius:3px
+    width: 500px;
 }
 
 #levelsContent p{
@@ -209,3 +196,42 @@ sub {
     font-size: small; 
     vertical-align: sub;
 }
+#prevNav{
+    width:500px;
+    position:relative;
+}
+#seePrev{
+    left:10px;
+
+}
+#seeNext{
+    left:10px;
+}
+#eraseSearches{
+    right:-282px;
+}
+#previous{
+    top:25px;
+}
+#displayedSearches{
+    left:200px;
+}
+.rDisp{
+    padding:10px;
+}
+/*
+.TitleWrap{
+    
+}*/
+/*
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    }
+}
+*/
