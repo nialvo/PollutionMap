@@ -45,13 +45,13 @@ NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
 var T;
-
-document.addEventListener('touchstart', function(event) {
+//Removes default function for touchscreens
+document.addEventListener('touchstart', function (event) {
     event.preventDefault()
-  })
-document.addEventListener('touchend', function(event) {
+})
+document.addEventListener('touchend', function (event) {
     event.preventDefault()
-  })
+})
 
 overlayContainerEl.style.display = "none"
 
@@ -96,7 +96,6 @@ function start() {
             else {
                 zip = "00000"
             }
-
         }
         //If this ip does not return a geo location, then give Beverly Hills because that's where I wanna be.
         else {
@@ -106,7 +105,6 @@ function start() {
             city = "Beverley Hills"
         }
         locZip.value = zip
-
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
@@ -114,9 +112,7 @@ function start() {
         lon = -117.40499
         zip = "90210"
         city = "Beverley Hills"
-
         locZip.value = zip
-
         drawGrid(lat, lon, gridSize, city)
     })
 }
@@ -152,7 +148,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     }
                     let z = 0;
                     let xx = 0;
-
                     let sstr = "";
                     for (const potype of pollTypes) {
                         if (potype in data.data.iaqi) {
@@ -489,7 +484,6 @@ function changeCoord() {
             catch {
                 zip = ""
             }
-
             locZip.value = zip
             //Erase previous map and recreate map div.    
             zoomLevel = z
