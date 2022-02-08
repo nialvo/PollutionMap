@@ -22,7 +22,7 @@ let lonInc
 let latInc = .48
 let zoomLevel = 7
 //Map and styling declarations.
-let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown
+let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T
 //'p' in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -32,42 +32,37 @@ const overlayContainerEl = document.querySelector('.ol-popup')
 const popupInfo = document.querySelector('.ol-popup-closer')
 const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
-const locZip = document.getElementById("enterZip")
-locZip.value = ""
+const locationInput = document.getElementById("enterZip")
+locationInput.value = ""
 var disp = document.getElementById("disp");
 //Map buttons.
 const OK = document.getElementById("ok")
-OK.addEventListener("click", event => {
-    console.log(locZip.value.length)
-    if (locZip.value.length !== 5) return
-    changeZip()
-})
+OK.addEventListener("click", myFunction)
 //localStorage HTML elements.
-var HDISP = document.getElementById("displayedSearches")
-var fs = 0;//index of first stored element to display
-var PREV = document.getElementById("seePrev")
+const HDISP = document.getElementById("displayedSearches")
+let fs = 0;//index of first stored element to display
+const PREV = document.getElementById("seePrev")
 PREV.addEventListener("click", seePrev)
-var NEXT = document.getElementById("seeNext")
+const NEXT = document.getElementById("seeNext")
 NEXT.addEventListener("click", seeNext)
-var ERASE = document.getElementById("eraseSearches")
+const ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
-let T
 overlayContainerEl.style.display = "none"
-
-locZip.addEventListener("keydown", event => {
-    return handleInput(locZip, event)
-})
-
 if (localStorage.getItem('place7896') == null) {
-    var storedSearches = [[], []];
+    let storedSearches = [[], []]
     for (let v = 0; v < 3; v++) {
-        HDISP.children[v].children[0].textContent = "";
-        HDISP.children[v].children[1].textContent = "";
+        HDISP.children[v].children[0].textContent = ""
+        HDISP.children[v].children[1].textContent = ""
     }
     displaySearches(fs)
-} else {
-    var storedSearches = [JSON.parse(localStorage.place7896), JSON.parse(localStorage.levels7896)];
+} 
+else {
+    var storedSearches = [JSON.parse(localStorage.place7896), JSON.parse(localStorage.levels7896)]
     displaySearches(fs)
+}
+//Event listener function for new search location.
+function myFunction() {
+    searchLocation(locationInput.value)
 }
 //Start the program
 start()
@@ -103,9 +98,9 @@ function start() {
             zip = "90210"
             city = "Beverley Hills"
         }
-        locZip.value = zip
+        locationInput.value = zip
         
-        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600)
         latInc = Inc * widthP *0.010986328125
         RAD = radC*widthP
         drawGrid(lat, lon, gridSize, city)
@@ -115,22 +110,19 @@ function start() {
         lon = -117.40499
         zip = "90210"
         city = "Beverley Hills"
-        locZip.value = zip
-        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+        locationInput.value = zip
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600)
         latInc = Inc * widthP
         RAD =radC*widthP
         drawGrid(lat, lon, gridSize, city)
     })
 }
 //Initial grid draw.
-function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
-    
-    
-    
-    eraseSearchDisplay();
-    displaySearches(fs);
-    localStorage.place7896 = JSON.stringify(storedSearches[0]);
-    localStorage.levels7896 = JSON.stringify(storedSearches[1]);
+function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.      
+    eraseSearchDisplay()
+    displaySearches(fs)
+    localStorage.place7896 = JSON.stringify(storedSearches[0])
+    localStorage.levels7896 = JSON.stringify(storedSearches[1])
     //Make increments 'latInc' and 'lonInc' equal in distance at center.
     lonInc = latInc / Math.cos(lati * 0.0174533)
     //Number of points on each side of central point.
@@ -396,6 +388,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 let coords = features[each].getGeometry().getCoordinates()
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
+                            OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
                             dragTrig()
@@ -405,6 +398,63 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 })
         }
     }
+}
+//Get input location data.
+function getLocationData() {
+    let url
+    if (arguments.length === 2) {
+        url = "https://api.waqi.info/feed/geo:" + arguments[1] + ";" + arguments[0] + "/?token=" + AQkey
+    }
+    else {
+        console.log(arguments[0])
+        url = "https://nominatim.openstreetmap.org/search?q=" + arguments[0] + "&country=USA&format=json"
+    }
+    return fetch(url)
+        .then(function(response) {
+            return response.json()
+        })
+        .catch(function () {
+            console.log("ERROR: NO LOCATION FOUND")
+        })
+        .then(function (data) {
+            //Checks if data is an Array type object containing multiple possible locations.
+            if (data instanceof Array) {
+                let imp = 0
+                let imp_i = 0
+                for (let i in data) {
+                    if (data[i].importance >= imp) {
+                        imp = data[i].importance
+                        imp_i = i
+                    }
+                }
+                console.log(imp_i)
+                return data[imp_i]
+            }
+            if (data.status !== "ok") return
+            data.data.lonLat = [arguments[0], arguments[1]]
+            console.log(data.data)
+            return data.data
+        })
+}
+//Get input location approximate area size in lat/lon
+function searchLocation(search) {
+    getLocationData(search)
+        .then(function (data) {
+            if (!data) return
+            let box = data.boundingbox
+            let left = box[2], right = box[3], bottom = box[0], top = box[1]
+            goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+        })
+}
+//Display map of entered location with size dependent on size of location.
+function goToLocation(lat, lon, min, max) {
+    OK.removeEventListener("click", myFunction)
+    if (!map) return
+    let points = [min, max, [max[0], min[1]], [min[0], max[1]]]
+    console.log(points)
+    let geo = new ol.geom.Polygon([points], "XY")
+    clearM()
+    map.getView().fit(geo)
 }
 //check to see if feature is on the same blue pixel color as water.
 function isWater(coords) {
@@ -431,41 +481,9 @@ function isWater(coords) {
     //If three or more pixels are blue, returns true. 
     return not_blues < 3
 }
-//change zip code when user adds zip code and clicks SUMBIT
-function changeZip() {
-    OK.removeEventListener("click", changeZip)
-    let resolution = map.getView().getResolution()
-    console.log(resolution)
-    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
-    latInc = Inc * resolution * widthP
-    RAD =radC*widthP
-    zoomLevel = map.getView().getZoom()
-    clearM()
-    zip = locZip.value
-    const zipUrl = "https://nominatim.openstreetmap.org/search?postalcode=" + zip + "&country=USA&format=json"
-    fetch(zipUrl).then(function (response) {
-        return response.json()
-    }).then(function (data) {
-        lat = data[0].lat
-        lon = data[0].lon
-        try {
-            city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
-            if (city == "") {
-                city = "Unnamed location"
-            }
-        } catch {
-            city = "Unnamed location"
-        }
-        drawGrid(lat, lon, gridSize, city)
-    }).catch(function () {
-        zip = "enter valid zip"
-        locZip.value = ""
-        locZip.placeholder = zip
-    })
-}
 //Changes central coordinates to current center of map, and changes feature size according to new zoomLevel.
 function changeCoord() {
-    OK.removeEventListener("click", changeZip)
+    OK.removeEventListener("click", myFunction)
     let resolution = map.getView().getResolution()
     widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
     latInc = Inc * resolution * widthP
@@ -506,7 +524,7 @@ function changeCoord() {
             catch {
                 zip = ""
             }
-            locZip.value = zip
+            locationInput.value = zip
             //Erase previous map and recreate map div.    
             zoomLevel = z
             drawGrid(lat, lon, gridSize, city)
