@@ -509,10 +509,10 @@ function clearM() {
 //Displays searches in HTML element.
 function displaySearches(index) {
     if (index == 0) {
-        PREV.setAttribute("style", "visibility:hidden")
+        PREV.setAttribute("style", "display:none")
     }
     else {
-        PREV.setAttribute("style", "visibility:visible")
+        PREV.setAttribute("style", "display:inline")
     }
     if (storedSearches[0].length - index < 4) {
         let w = 0
@@ -564,7 +564,7 @@ function eraseSearches() {
 function eraseSearchDisplay() {
     ERASE.setAttribute("style", "visibility:hidden")
     NEXT.setAttribute("style", "visibility:hidden")
-    PREV.setAttribute("style", "visibility:hidden")
+    PREV.setAttribute("style", "display:none")
     for (let v = 0; v < 3; v++) {
         HDISP.children[v].children[0].textContent = ""
         HDISP.children[v].children[1].textContent = ""
