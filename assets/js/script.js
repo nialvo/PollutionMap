@@ -15,7 +15,7 @@ let lonInc
 let latInc = .48
 let zoomLevel = 7
 //Map and styling declarations.
-let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle
+let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown
 //'p' in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -44,8 +44,7 @@ var NEXT = document.getElementById("seeNext")
 NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
-var T;
-
+let T
 overlayContainerEl.style.display = "none"
 
 locZip.addEventListener("keydown", event => {
@@ -89,7 +88,6 @@ function start() {
             else {
                 zip = "00000"
             }
-
         }
         //If this ip does not return a geo location, then give Beverly Hills because that's where I wanna be.
         else {
@@ -99,7 +97,6 @@ function start() {
             city = "Beverley Hills"
         }
         locZip.value = zip
-
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
@@ -107,9 +104,7 @@ function start() {
         lon = -117.40499
         zip = "90210"
         city = "Beverley Hills"
-
         locZip.value = zip
-
         drawGrid(lat, lon, gridSize, city)
     })
 }
@@ -145,7 +140,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     }
                     let z = 0;
                     let xx = 0;
-
                     let sstr = "";
                     for (const potype of pollTypes) {
                         if (potype in data.data.iaqi) {
@@ -264,6 +258,25 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     }
                                 })
                         }
+                        disp.children[0].addEventListener('mousedown', function () {
+                            isMouseDown = true
+                            if (isMouseDown == true) dragTrig()
+                        })
+                        //Removes default function for touchscreens
+                        disp.children[0].addEventListener('touchstart', function (event) {
+                            event.preventDefault()
+                        })
+                        disp.children[0].addEventListener('touchend', function (event) {
+                            event.preventDefault()
+                        })
+
+                        document.addEventListener('mouseup', function () {
+                            if (isMouseDown == true) isMouseDown = false
+                            if (isMouseDown == false) {
+                                dragTrig()
+                                isMouseDown = undefined
+                            }
+                        })
                         //On mouse hold down and drag, nothing happens.
                         map.on('pointermove', function (evt) {
                             //If there is no dragging, then displayFeatureInfo runs
@@ -286,7 +299,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     image: new ol.style.Circle({
                                         radius: 15,
                                         fill: new ol.style.Fill({
-                                            color: [200, 100, 50, 100]
+                                            color: [200, 100, 50, 0]
                                         }),
                                         stroke: new ol.style.Stroke({
                                             color: '#0000e6',
@@ -296,7 +309,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 })
                                 //Sets circle color to highlighted version of current color.                             
                                 feature.setStyle(function (feature, resolution) {
-                                    highlightStyle.getImage().getFill().setColor(pixelAtCoords)
+                                    //highlightStyle.getImage().getFill().setColor(pixelAtCoords)
                                     highlightStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
                                     return highlightStyle
                                 })
@@ -335,7 +348,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     image: new ol.style.Circle({
                                         radius: 15,
                                         fill: new ol.style.Fill({
-                                            color: [255,255,255, 100]
+                                            color: [200, 100, 50, 0]
                                         }),
                                         stroke: new ol.style.Stroke({
                                             color: '#0000e6',
@@ -345,7 +358,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 })
                                 //Sets circle color to highlighted version of current color.                             
                                 feature.setStyle(function (feature, resolution) {
-                                    //highlightStyle.getImage().getFill().setColor()
+                                    //highlightStyle.getImage().getFill().setColor(pixelAtCoords)
                                     highlightStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
                                     return highlightStyle
                                 })
@@ -367,7 +380,9 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
                         })
-                        map.getView().on("change:center", dragTrig)
+                        map.getView().on("change:center", function () {
+                            dragTrig()
+                        })
                         map.addOverlay(popup)
                     }
                 })
@@ -469,7 +484,6 @@ function changeCoord() {
             catch {
                 zip = ""
             }
-
             locZip.value = zip
             //Erase previous map and recreate map div.    
             zoomLevel = z
@@ -558,6 +572,10 @@ function eraseSearchDisplay() {
 }
 //trigger new grid when user stops scrolling
 function dragTrig() {
-    clearTimeout(T)
-    T = setTimeout(changeCoord, 1250)
+    if (isMouseDown || isMouseDown == undefined) {
+        clearTimeout(T)
+    }
+    if (!isMouseDown) {
+        T = setTimeout(changeCoord, 1250)
+    }
 }
