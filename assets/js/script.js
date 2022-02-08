@@ -275,6 +275,9 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 isMouseDown = undefined
                             }
                         })
+                        document.addEventListener('touchstart', function(event) {
+                            event.preventDefault()
+                          })
                         document.addEventListener('touchend', function(event) {
                             event.preventDefault()
                           })
