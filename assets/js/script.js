@@ -264,11 +264,11 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     }
                                 })
                         }
-                        disp.children[0].addEventListener('mousedown', function () {
+                        disp.children[0].addEventListener('pointerdown', function () {
                             isMouseDown = true
                             if (isMouseDown == true) dragTrig()
                         })
-                        document.addEventListener('mouseup', function () {
+                        document.addEventListener('pointerup', function () {
                             if (isMouseDown == true) isMouseDown = false
                             if (isMouseDown == false) {
                                 dragTrig()
