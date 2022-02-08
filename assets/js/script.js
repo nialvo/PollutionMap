@@ -9,7 +9,14 @@ const gridSize = 9
 const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 const pollNames = ["PM<sub>2.5</sub>", "NO<sub>2</sub>", "CO", "SO<sub>2</sub>", "NH<sub>3</sub>", "O<sub>3</sub>", "PM<sub>10</sub>"]
 //Increment
-const Inc = 43.6906666666666
+const orInc = 43.6906666666666
+const radC = 15;
+var RAD;
+var widthP;
+var sizer = document.getElementById("overlayContainer");
+widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+console.log(widthP)
+var Inc = orInc;
 //These three must change with zoom, or first two musy change when user changes zoom.
 let lonInc
 let latInc = .48
@@ -97,6 +104,10 @@ function start() {
             city = "Beverley Hills"
         }
         locZip.value = zip
+        
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+        latInc = Inc * widthP *0.010986328125
+        RAD = radC*widthP
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
@@ -105,11 +116,17 @@ function start() {
         zip = "90210"
         city = "Beverley Hills"
         locZip.value = zip
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+        latInc = Inc * widthP
+        RAD =radC*widthP
         drawGrid(lat, lon, gridSize, city)
     })
 }
 //Initial grid draw.
 function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
+    
+    
+    
     eraseSearchDisplay();
     displaySearches(fs);
     localStorage.place7896 = JSON.stringify(storedSearches[0]);
@@ -165,7 +182,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 let q = data.data.iaqi["pm25"].v
                 let colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 15,
+                        radius: RAD,
                         //set color with rgb
                         fill: new ol.style.Fill({
                             color: [Math.min(q * 2, 255), Math.max(255 - q * 2, 0), Math.min(Math.max(0, 2 * (q - 70)), 255)]
@@ -195,7 +212,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 .catch(function () {
                     const greyStyle = new ol.style.Style({
                         image: new ol.style.Circle({
-                            radius: 15,
+                            radius: RAD,
                             fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data.
                         })
                     })
@@ -297,7 +314,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 //Highlight version of colorStyle circle for hit detection
                                 let highlightStyle = new ol.style.Style({
                                     image: new ol.style.Circle({
-                                        radius: 15,
+                                        radius: RAD,
                                         fill: new ol.style.Fill({
                                             color: [200, 100, 50, 0]
                                         }),
@@ -346,7 +363,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 //Highlight version of colorStyle circle for hit detection
                                 let highlightStyle = new ol.style.Style({
                                     image: new ol.style.Circle({
-                                        radius: 15,
+                                        radius: RAD,
                                         fill: new ol.style.Fill({
                                             color: [200, 100, 50, 0]
                                         }),
@@ -418,7 +435,10 @@ function isWater(coords) {
 function changeZip() {
     OK.removeEventListener("click", changeZip)
     let resolution = map.getView().getResolution()
-    latInc = Inc * resolution
+    console.log(resolution)
+    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+    latInc = Inc * resolution * widthP
+    RAD =radC*widthP
     zoomLevel = map.getView().getZoom()
     clearM()
     zip = locZip.value
@@ -447,7 +467,9 @@ function changeZip() {
 function changeCoord() {
     OK.removeEventListener("click", changeZip)
     let resolution = map.getView().getResolution()
-    latInc = Inc * resolution
+    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+    latInc = Inc * resolution * widthP
+    RAD =radC*widthP
     clearM()
     const coords = map.getView().getCenter()
     lat = coords[1]
