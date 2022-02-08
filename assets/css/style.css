@@ -12,8 +12,16 @@ canvas {
     
     
 }
-
-
+.ourFooter {
+    margin-top: 100px;
+    bottom: 0;
+    position: absolute;
+    padding-top: 10px;
+    border-top: #FFE08A 5px solid;
+    width: 100%;
+    margin-bottom: 0;
+    background-color: white;
+}
 
 #overlayContainer{
     position:relative;
@@ -28,9 +36,6 @@ canvas {
     left: 0;
     z-index:3;
 }
-
-
-
 
 @keyframes waiting{
     0%{background-image: url('../images/patience.png');}
@@ -48,9 +53,7 @@ canvas {
     z-index:1;
     position:absolute;
     background-image: url('../images/patience.png');
-    object-fit:contain;
-   
-
+    object-fit:contain;  
 }
 #wait2{
     height:600px;
@@ -62,9 +65,7 @@ canvas {
     animation-name:waiting;
     animation-duration:2s;
     animation-iteration-count: infinite;
-    object-fit:contain;
-   
-
+    object-fit:contain; 
 }
 
 #mapTitleWrap{
@@ -83,8 +84,7 @@ canvas {
 
 #map {
     height: 600px;
-    width: 600px;
-    
+    width: 600px;   
     /*margin:auto;  */
 }
 
@@ -114,15 +114,11 @@ canvas {
     margin-right:10px;
    
 }
-
-
 .boxlet3{
     margin-left:40px;
     
     margin-top:45px
 }
-
-
 
 #previous,#localLevels{
     width:500px;
@@ -141,7 +137,6 @@ canvas {
     flex-wrap:flex;
     justify-content:space-evenly;    
 }
-
 
 #info {
     width: 65px;
@@ -221,30 +216,27 @@ sub {
 .rDisp{
     padding:10px;
 }
-/*
-.TitleWrap{
-    
-}*/
-/*
-@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {html {
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    width: 100vh;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
+@media screen and (max-width: 1139px){
+    .ourFooter {
+        position: relative;
     }
+    
 }
-*/
-
-
+@media screen and (min-width: 1140px){
+    .ourFooter {
+        position: absolute;
+    }
+    
+}
 @media screen and (max-width:620px){
     #overlayContainer, #map, #wait1, #wait2, #boxlet2{
         
         height:500px;
         width:500px;
         
+    }
+    .ourFooter {
+        position: relative;
     }
     
 
@@ -256,7 +248,7 @@ sub {
         width:400px;
         
     }
-    
+
 
 }
 @media screen and (max-width:420px){
@@ -266,6 +258,5 @@ sub {
         width:300px;
         
     }
-    
 
 }
