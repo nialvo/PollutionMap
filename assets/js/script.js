@@ -44,15 +44,7 @@ var NEXT = document.getElementById("seeNext")
 NEXT.addEventListener("click", seeNext)
 var ERASE = document.getElementById("eraseSearches")
 ERASE.addEventListener("click", eraseSearches)
-var T;
-//Removes default function for touchscreens
-document.addEventListener('touchstart', function (event) {
-    event.preventDefault()
-})
-document.addEventListener('touchend', function (event) {
-    event.preventDefault()
-})
-
+let T
 overlayContainerEl.style.display = "none"
 
 locZip.addEventListener("keydown", event => {
@@ -270,6 +262,14 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             isMouseDown = true
                             if (isMouseDown == true) dragTrig()
                         })
+                        //Removes default function for touchscreens
+                        disp.children[0].addEventListener('touchstart', function (event) {
+                            event.preventDefault()
+                        })
+                        disp.children[0].addEventListener('touchend', function (event) {
+                            event.preventDefault()
+                        })
+
                         document.addEventListener('mouseup', function () {
                             if (isMouseDown == true) isMouseDown = false
                             if (isMouseDown == false) {
