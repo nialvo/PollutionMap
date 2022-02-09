@@ -9,7 +9,7 @@ const gridSize = 9
 const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 const pollNames = ["PM<sub>2.5</sub>", "NO<sub>2</sub>", "CO", "SO<sub>2</sub>", "NH<sub>3</sub>", "O<sub>3</sub>", "PM<sub>10</sub>"]
 //Increment
-const orInc = 43.6906666666666
+const orInc = 35//43.6906666666666
 const radC = 15
 let RAD
 let widthP
@@ -21,7 +21,7 @@ let lonInc
 let latInc = .48
 let zoomLevel = 7
 //Map and styling declarations.
-let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T, isScrolling, searched
+let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T, isScrolling, searched, clicked
 //'p' in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -41,7 +41,7 @@ const OK = document.getElementById("ok")
 OK.addEventListener("click", myFunction)
 const searchCurrentEl = document.getElementById('here')
 searchCurrentEl.addEventListener("click", searchCurrent)
-searchCurrentEl.setAttribute('style', 'display: none')
+searchCurrentEl.setAttribute('style', 'visibility: hidden')
 //localStorage HTML elements.
 const HDISP = document.getElementById("displayedSearches")
 let fs = 0;//index of first stored element to display
@@ -73,19 +73,20 @@ else {
 let startClick
 //Event listener function for host's current location in real life.
 function localSearch() {
-    searchCurrentEl.setAttribute('style', 'display: none')
-    currentLoc.setAttribute('style', 'display: none')
+    searchCurrentEl.setAttribute('style', 'visibility: hidden')
+    currentLoc.setAttribute('style', 'visibility: hidden')
     start()
 }
 //Event listener function for search host's location on map.
 function searchCurrent() {
     searched = true
-    searchCurrentEl.setAttribute('style', 'display: none')
-    currentLoc.setAttribute('style', 'display: none')
+    searchCurrentEl.setAttribute('style', 'visibility: hidden')
+    currentLoc.setAttribute('style', 'visibility: hidden')
     changeCoord()
 }
 //Event listener function for new search location.
 function myFunction() {
+    clicked = true
     if (/^\d{5}(-\d{4})?$/.test(locationInput.value)) changeZip(locationInput.value)
     else searchLocation(locationInput.value)
 }
@@ -94,8 +95,8 @@ start()
 //launches when page loads, get location from IP and draw map.
 function start() {
     clearM()
-    searchCurrentEl.setAttribute('style', 'display: none')
-    currentLoc.setAttribute('style', 'display: none')
+    searchCurrentEl.setAttribute('style', 'visibility: hidden')
+    currentLoc.setAttribute('style', 'visibility: hidden')
     fetch(ipUrl).then(function (response) {
         return response.json()
     }).then(function (data) {
@@ -417,12 +418,14 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 let coords = features[each].getGeometry().getCoordinates()
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
-                            if (ogLat != lati && ogLon != lonj) currentLoc.setAttribute('style', 'display: block')
+                            if (ogLat != lati && ogLon != lonj) currentLoc.setAttribute("style", "visibility: visible")
+                            clicked = false
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
                             isScrolling = true
-                            currentLoc.setAttribute('style', 'display: block')
+                            if (clicked == true) currentLoc.setAttribute("style", "visibility: hidden")
+                            else if (clicked == false) currentLoc.setAttribute("style", "visibility: visible")
                             restoreSearchButton()
                         })
                         map.addOverlay(popup)
@@ -435,18 +438,20 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
 function restoreSearchButton() {
     console.log(isMouseDown, isScrolling, searched)
     if ((isMouseDown == true || isMouseDown == undefined) || (isScrolling == true && searched == true)) {
-        searchCurrentEl.setAttribute('style', "visibility: hidden")
+        searchCurrentEl.setAttribute("style", "visibility: hidden")
         searchCurrentEl.removeEventListener("click", searchCurrent)
         currentLoc.removeEventListener("click", localSearch)
         isScrolling = false
         clearTimeout(T)
     }
-    if ((isMouseDown == false || isMouseDown == undefined) && (isScrolling == false && searched == false)) {
+    if ((isMouseDown == false || isMouseDown == undefined) && isScrolling == false) {
         clearTimeout(T)
         T = setTimeout(function () {
-            searchCurrentEl.setAttribute("style", "visibility: visible")
-            currentLoc.addEventListener("click", localSearch)
-            searchCurrentEl.addEventListener("click", searchCurrent)
+            if (searched == false && clicked == false) {
+                searchCurrentEl.setAttribute("style", "visibility: visible")
+                currentLoc.addEventListener("click", localSearch)
+                searchCurrentEl.addEventListener("click", searchCurrent)
+            }
         }, 500)
     }
 }
@@ -490,7 +495,7 @@ function goToLocation(lat, lon, min, max) {
     OK.removeEventListener("click", myFunction)
     if (!map) return
     let points = [min, max, [max[0], min[1]], [min[0], max[1]]]
-    let geo = new ol.geom.Polygon([points], "XY") 
+    let geo = new ol.geom.Polygon([points], "XY")
     clearM()
     map.getView().fit(geo)
     zoomLevel = Math.max(Math.min(map.getView().getZoom(), 14), 4)
@@ -540,8 +545,8 @@ function changeZip(zipCode) {
         RAD = radC * widthP
         clearM()
         drawGrid(lat, lon, gridSize, city)
-        searchCurrentEl.setAttribute('style', 'display: none')
-        currentLoc.setAttribute('style', 'display: none')
+        searchCurrentEl.setAttribute('style', 'visibility: hidden')
+        currentLoc.setAttribute('style', 'visibility: hidden')
         searchCurrentEl.removeEventListener("click", searchCurrent)
         currentLoc.removeEventListener("click", localSearch)
     }).catch(function () {
