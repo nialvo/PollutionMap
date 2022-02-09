@@ -112,6 +112,7 @@ function start() {
         latInc = Inc * widthP * 0.010986328125
         RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
+        locationInput.value = ''
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
         lat = 34.07440
@@ -123,10 +124,12 @@ function start() {
         latInc = Inc * widthP
         RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
+        locationInput.value = ''
     })
 }
 //Initial grid draw.
 function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.      
+    locationInput.value = ''
     eraseSearchDisplay()
     displaySearches(fs)
     localStorage.place7896 = JSON.stringify(storedSearches[0])
