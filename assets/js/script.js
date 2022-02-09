@@ -10,18 +10,18 @@ const pollTypes = ["pm25", "no2", "co", "so2", "nh3", "o3", "pm10"]
 const pollNames = ["PM<sub>2.5</sub>", "NO<sub>2</sub>", "CO", "SO<sub>2</sub>", "NH<sub>3</sub>", "O<sub>3</sub>", "PM<sub>10</sub>"]
 //Increment
 const orInc = 43.6906666666666
-const radC = 15;
-var RAD;
-var widthP;
-var sizer = document.getElementById("overlayContainer");
-widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
-var Inc = orInc;
+const radC = 15
+let RAD
+let widthP
+const sizer = document.getElementById("overlayContainer")
+widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
+var Inc = orInc
 //These three must change with zoom, or first two musy change when user changes zoom.
 let lonInc
 let latInc = .48
 let zoomLevel = 7
 //Map and styling declarations.
-let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T
+let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown,T
 //'p' in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -33,10 +33,12 @@ const llTitle = document.getElementById("levelsTitle")
 const llContent = document.getElementById("levelsContent")
 const locationInput = document.getElementById("enterZip")
 locationInput.value = ""
-var disp = document.getElementById("disp");
+const disp = document.getElementById("disp")
 //Map buttons.
 const OK = document.getElementById("ok")
 OK.addEventListener("click", myFunction)
+const searchCurrentEl = document.getElementById('here')
+searchCurrentEl.addEventListener("click", changeCoord)
 //localStorage HTML elements.
 const HDISP = document.getElementById("displayedSearches")
 let fs = 0;//index of first stored element to display
@@ -67,6 +69,7 @@ else {
 }
 //Event listener function for new search location.
 function myFunction() {
+    city = locationInput.value
     searchLocation(locationInput.value)
 }
 //Start the program
@@ -104,9 +107,9 @@ function start() {
             city = "Beverley Hills"
         }
         locationInput.value = zip
-        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600)
-        latInc = Inc * widthP *0.010986328125
-        RAD = radC*widthP
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
+        latInc = Inc * widthP * 0.010986328125
+        RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
     }).catch(function () {
         console.log("ERROR: BAD IP FETCH")
@@ -115,9 +118,9 @@ function start() {
         zip = "90210"
         city = "Beverley Hills"
         locationInput.value = zip
-        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600)
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
         latInc = Inc * widthP
-        RAD =radC*widthP
+        RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
     })
 }
@@ -273,20 +276,12 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         }
                         disp.children[0].addEventListener('mousedown', function () {
                             isMouseDown = true
-                            if (isMouseDown == true) dragTrig()
-                        })
-                        //Removes default function for touchscreens
-                        disp.children[0].addEventListener('touchstart', function (event) {
-                            event.preventDefault()
-                        })
-                        disp.children[0].addEventListener('touchend', function (event) {
-                            event.preventDefault()
+                            if(isMouseDown == true) searchCurrentEl.setAttribute("style", "visibility:hidden")                            
                         })
                         document.addEventListener('mouseup', function () {
-                            if (isMouseDown == true) isMouseDown = false
-                            if (isMouseDown == false) {
-                                dragTrig()
-                                isMouseDown = undefined
+                            isMouseDown = false
+                            if(isMouseDown == false) {
+                                searchCurrentEl.setAttribute("style", "visibility:visible")
                             }
                         })
                         //On mouse hold down and drag, nothing happens.
@@ -394,12 +389,23 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
-                            dragTrig()
-                        })
+                            searchCurrentEl.setAttribute("style", "visibility:hidden")
+                            restoreSearchButton()
+                        })     
                         map.addOverlay(popup)
                     }
                 })
         }
+    }
+}
+//Restores search button after T time.
+function restoreSearchButton() {
+    if (isMouseDown == true || isMouseDown == undefined) return
+    if (isMouseDown == false) {
+        T = setTimeout(function(){
+            searchCurrentEl.setAttribute("style", "visibility: visible")
+            searchCurrentEl.addEventListener("click", changeCoord)
+        }, 250)
     }
 }
 //Get input location data.
@@ -412,7 +418,7 @@ function getLocationData() {
         url = "https://nominatim.openstreetmap.org/search?q=" + arguments[0] + "&country=USA&format=json"
     }
     return fetch(url)
-        .then(function(response) {
+        .then(function (response) {
             return response.json()
         })
         .catch(function () {
@@ -454,6 +460,12 @@ function goToLocation(lat, lon, min, max) {
     let geo = new ol.geom.Polygon([points], "XY")
     clearM()
     map.getView().fit(geo)
+    zoomLevel = Math.max(Math.min(map.getView().getZoom(), 14), 4)
+    let resolution = map.getView().getResolution()
+    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
+    latInc = Inc * resolution * widthP
+    RAD = radC * widthP
+    drawGrid(lat, lon, gridSize, city)
 }
 //check to see if feature is on the same blue pixel color as water.
 function isWater(coords) {
@@ -484,9 +496,9 @@ function isWater(coords) {
 function changeCoord() {
     OK.removeEventListener("click", myFunction)
     let resolution = map.getView().getResolution()
-    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width'))/600);
+    widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600);
     latInc = Inc * resolution * widthP
-    RAD =radC*widthP
+    RAD = radC * widthP
     clearM()
     const coords = map.getView().getCenter()
     lat = coords[1]
@@ -607,14 +619,5 @@ function eraseSearchDisplay() {
     for (let v = 0; v < 3; v++) {
         HDISP.children[v].children[0].textContent = ""
         HDISP.children[v].children[1].textContent = ""
-    }
-}
-//trigger new grid when user stops scrolling
-function dragTrig() {
-    if (isMouseDown || isMouseDown == undefined) {
-        clearTimeout(T)
-    }
-    if (!isMouseDown) {
-        T = setTimeout(changeCoord, 1250)
     }
 }
