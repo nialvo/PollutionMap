@@ -15,7 +15,17 @@ canvas {
     margin-bottom: 0;
     background-color: white;
 }
-
+.searchLoc {
+    margin-top: 500px;
+    background-color: #3488CE;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
+.searchLoc:hover {
+    cursor: pointer;
+    color: black;
+}
 .menu{
     background-color:white;
     display:flex;
@@ -231,6 +241,9 @@ sub {
     }  
 }
 @media screen and (max-width:620px){
+    .searchLoc {
+        margin-top: 400px;
+    }
     .boxlet3 {
         margin-top: 80px;
     }
@@ -255,6 +268,9 @@ sub {
     }
 }
 @media screen and (max-width:520px){
+    .searchLoc {
+        margin-top: 300px;
+    }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels,#prevNav{    
         height:400px;
         width:400px;      
@@ -274,6 +290,9 @@ sub {
     }
 }
 @media screen and (max-width:420px){
+    .searchLoc {
+        margin-top: 200px;
+    }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav{       
         height: 300px;
         width:300px;        
