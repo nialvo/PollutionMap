@@ -92,7 +92,10 @@ function myFunction() {
         locationInput.value = ''
         return locationInput.placeholder = " Please enter a valid location..."
     }
-    else searchLocation(locationInput.value)
+    else {
+        city = locationInput.value;
+        searchLocation(locationInput.value);
+    }
 }
 //Start the program
 start()
