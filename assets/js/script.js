@@ -95,6 +95,7 @@ start()
 //launches when page loads, get location from IP and draw map.
 function start() {
     clearM()
+    zoomLevel = 7
     searchCurrentEl.setAttribute('style', 'visibility: hidden')
     currentLoc.setAttribute('style', 'visibility: hidden')
     fetch(ipUrl).then(function (response) {
@@ -420,6 +421,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             }
                             if (ogLat != lati && ogLon != lonj) currentLoc.setAttribute("style", "visibility: visible")
                             clicked = false
+                            currentLoc.addEventListener("click", localSearch)
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
@@ -436,7 +438,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
 }
 //Restores search button after T time.
 function restoreSearchButton() {
-    console.log(isMouseDown, isScrolling, searched)
     if ((isMouseDown == true || isMouseDown == undefined) || (isScrolling == true && searched == true)) {
         searchCurrentEl.setAttribute("style", "visibility: hidden")
         searchCurrentEl.removeEventListener("click", searchCurrent)
@@ -472,7 +473,6 @@ function getLocationData() {
             console.log("ERROR: NO LOCATION FOUND")
         })
         .then(function (data) {
-            console.log(data)
             //Checks if data is an Array type object containing multiple possible locations.
             if (data instanceof Array) return data[0]
             if (data.status !== "ok") return
