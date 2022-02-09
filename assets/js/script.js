@@ -35,6 +35,8 @@ const locationInput = document.getElementById("enterZip")
 locationInput.value = ""
 const disp = document.getElementById("disp")
 //Map buttons.
+const currentLoc = document.getElementById('currentLoc')
+currentLoc.addEventListener("click", start)
 const OK = document.getElementById("ok")
 OK.addEventListener("click", myFunction)
 const searchCurrentEl = document.getElementById('here')
@@ -73,10 +75,14 @@ function myFunction() {
     city = locationInput.value
     searchLocation(locationInput.value)
 }
+let startCheck
 //Start the program
 start()
 //launches when page loads, get location from IP and draw map.
 function start() {
+    clearM()
+    startCheck = true
+    if(startCheck == true) currentLoc.setAttribute('style', 'visibility: hidden')
     fetch(ipUrl).then(function (response) {
         return response.json()
     }).then(function (data) {
@@ -393,6 +399,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
+                            startCheck = false
+                            currentLoc.setAttribute('style', 'visibility: visible')
                             searchCurrentEl.setAttribute("style", "visibility: hidden")
                             restoreSearchButton()
                         })     
