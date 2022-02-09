@@ -564,8 +564,15 @@ function changeCoord() {
     RAD = radC * widthP
     clearM()
     const coords = map.getView().getCenter()
+    let yy = map.getView().getCenter()[0]
+    while (yy < 180) {
+        yy += 360
+    }
+    while (yy > 180) {
+        yy -= 360
+    }
     lat = coords[1]
-    lon = coords[0]
+    lon = yy
     //Current map zoom level.
     z = map.getView().getZoom()
     const locUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon + "&zoom=" + Math.round(z)
