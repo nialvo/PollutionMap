@@ -282,6 +282,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             isMouseDown = false
                             if(isMouseDown == false) {
                                 searchCurrentEl.setAttribute("style", "visibility:visible")
+                                isMouseDown = undefined
                             }
                         })
                         //On mouse hold down and drag, nothing happens.
