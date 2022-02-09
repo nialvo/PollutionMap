@@ -21,7 +21,7 @@ let lonInc
 let latInc = .48
 let zoomLevel = 7
 //Map and styling declarations.
-let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown,T
+let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T, isScrolling, searched
 //'p' in drawGrid loop function is to enumerate the points on the grid:
 /*678
   345
@@ -36,12 +36,12 @@ locationInput.value = ""
 const disp = document.getElementById("disp")
 //Map buttons.
 const currentLoc = document.getElementById('currentLoc')
-currentLoc.addEventListener("click", start)
+currentLoc.addEventListener("click", localSearch)
 const OK = document.getElementById("ok")
 OK.addEventListener("click", myFunction)
 const searchCurrentEl = document.getElementById('here')
-searchCurrentEl.addEventListener("click", changeCoord)
-searchCurrentEl.setAttribute('style', 'visibility: hidden')
+searchCurrentEl.addEventListener("click", searchCurrent)
+searchCurrentEl.setAttribute('style', 'display: none')
 //localStorage HTML elements.
 const HDISP = document.getElementById("displayedSearches")
 let fs = 0;//index of first stored element to display
@@ -70,19 +70,32 @@ else {
     var storedSearches = [JSON.parse(localStorage.place7896), JSON.parse(localStorage.levels7896)]
     displaySearches(fs)
 }
+let startClick
+//Event listener function for host's current location in real life.
+function localSearch() {
+    searchCurrentEl.setAttribute('style', 'display: none')
+    currentLoc.setAttribute('style', 'display: none')
+    start()
+}
+//Event listener function for search host's location on map.
+function searchCurrent() {
+    searched = true
+    searchCurrentEl.setAttribute('style', 'display: none')
+    currentLoc.setAttribute('style', 'display: none')
+    changeCoord()
+}
 //Event listener function for new search location.
 function myFunction() {
-    city = locationInput.value
-    searchLocation(locationInput.value)
+    if (/^\d{5}(-\d{4})?$/.test(locationInput.value)) changeZip(locationInput.value)
+    else searchLocation(locationInput.value)
 }
-let startCheck
 //Start the program
 start()
 //launches when page loads, get location from IP and draw map.
 function start() {
     clearM()
-    startCheck = true
-    if(startCheck == true) currentLoc.setAttribute('style', 'visibility: hidden')
+    searchCurrentEl.setAttribute('style', 'display: none')
+    currentLoc.setAttribute('style', 'display: none')
     fetch(ipUrl).then(function (response) {
         return response.json()
     }).then(function (data) {
@@ -90,6 +103,8 @@ function start() {
         if (data.latitude && data.longitude) {
             lat = data.latitude
             lon = data.longitude
+            ogLat = lat
+            ogLon = lon
             if (data.city) {
                 city = data.city
                 if (city == "") {
@@ -136,6 +151,7 @@ function start() {
 //Initial grid draw.
 function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.      
     locationInput.value = ''
+    searched = false
     eraseSearchDisplay()
     displaySearches(fs)
     localStorage.place7896 = JSON.stringify(storedSearches[0])
@@ -267,6 +283,10 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 zoom: zoomLevel
                             })
                         })
+                        searchCurrentEl.setAttribute('style', 'display: none')
+                        currentLoc.setAttribute('style', 'display: none')
+                        searchCurrentEl.removeEventListener("click", searchCurrent)
+                        currentLoc.removeEventListener("click", localSearch)
                         let highlight
                         //On hit detection of feature, append info to info.innerHTML.
                         const displayFeatureInfo = function (pixel) {
@@ -275,10 +295,10 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                     const feature = features.length ? features[0] : undefined
                                     if (feature !== highlight) {
                                         if (highlight) {
-                                            overlayContainerEl.setAttribute("style", "visibility:hidden")
+                                            overlayContainerEl.setAttribute("style", "display: none")
                                         }
                                         if (feature) {
-                                            overlayContainerEl.setAttribute("style", "visibility:visible")
+                                            overlayContainerEl.setAttribute("style", "display: inline")
                                         }
                                         highlight = feature
                                     }
@@ -286,12 +306,13 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         }
                         disp.children[0].addEventListener('mousedown', function () {
                             isMouseDown = true
-                            if(isMouseDown == true) searchCurrentEl.setAttribute("style", "visibility:hidden")                            
+                            if (isMouseDown == true) restoreSearchButton()
                         })
                         document.addEventListener('mouseup', function () {
-                            isMouseDown = false
-                            if(isMouseDown == false) {
+                            if (isMouseDown == true) isMouseDown = false
+                            if (isMouseDown == false) {
                                 restoreSearchButton()
+                                isMouseDown = undefined
                             }
                         })
                         //On mouse hold down and drag, nothing happens.
@@ -396,14 +417,14 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                                 let coords = features[each].getGeometry().getCoordinates()
                                 if (isWater(coords)) vectorSource.removeFeature(features[each])
                             }
+                            if (ogLat != lati && ogLon != lonj) currentLoc.setAttribute('style', 'display: block')
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
-                            startCheck = false
-                            currentLoc.setAttribute('style', 'visibility: visible')
-                            searchCurrentEl.setAttribute("style", "visibility: hidden")
+                            isScrolling = true
+                            currentLoc.setAttribute('style', 'display: block')
                             restoreSearchButton()
-                        })     
+                        })
                         map.addOverlay(popup)
                     }
                 })
@@ -412,11 +433,20 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
 }
 //Restores search button after T time.
 function restoreSearchButton() {
-    if (isMouseDown == true || isMouseDown == undefined) return
-    if (isMouseDown == false) {
-        T = setTimeout(function(){
+    console.log(isMouseDown, isScrolling, searched)
+    if ((isMouseDown == true || isMouseDown == undefined) || (isScrolling == true && searched == true)) {
+        searchCurrentEl.setAttribute('style', "visibility: hidden")
+        searchCurrentEl.removeEventListener("click", searchCurrent)
+        currentLoc.removeEventListener("click", localSearch)
+        isScrolling = false
+        clearTimeout(T)
+    }
+    if ((isMouseDown == false || isMouseDown == undefined) && (isScrolling == false && searched == false)) {
+        clearTimeout(T)
+        T = setTimeout(function () {
             searchCurrentEl.setAttribute("style", "visibility: visible")
-            searchCurrentEl.addEventListener("click", changeCoord)
+            currentLoc.addEventListener("click", localSearch)
+            searchCurrentEl.addEventListener("click", searchCurrent)
         }, 500)
     }
 }
@@ -437,18 +467,9 @@ function getLocationData() {
             console.log("ERROR: NO LOCATION FOUND")
         })
         .then(function (data) {
+            console.log(data)
             //Checks if data is an Array type object containing multiple possible locations.
-            if (data instanceof Array) {
-                let imp = 0
-                let imp_i = 0
-                for (let i in data) {
-                    if (data[i].importance >= imp) {
-                        imp = data[i].importance
-                        imp_i = i
-                    }
-                }
-                return data[imp_i]
-            }
+            if (data instanceof Array) return data[0]
             if (data.status !== "ok") return
             data.data.lonLat = [arguments[0], arguments[1]]
             return data.data
@@ -469,7 +490,7 @@ function goToLocation(lat, lon, min, max) {
     OK.removeEventListener("click", myFunction)
     if (!map) return
     let points = [min, max, [max[0], min[1]], [min[0], max[1]]]
-    let geo = new ol.geom.Polygon([points], "XY")
+    let geo = new ol.geom.Polygon([points], "XY") 
     clearM()
     map.getView().fit(geo)
     zoomLevel = Math.max(Math.min(map.getView().getZoom(), 14), 4)
@@ -503,6 +524,31 @@ function isWater(coords) {
     }
     //If three or more pixels are blue, returns true. 
     return not_blues < 3
+}
+function changeZip(zipCode) {
+    const zipUrl = "https://nominatim.openstreetmap.org/search?postalcode=" + zipCode + "&country=USA&format=json"
+    fetch(zipUrl).then(function (response) {
+        return response.json()
+    }).then(function (data) {
+        zoomLevel = 11
+        lat = data[0].lat
+        lon = data[0].lon
+        city = data[0].display_name.substring(0, data[0].display_name.indexOf(","))
+        let resolution = 0.0006866455078125
+        widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
+        latInc = Inc * resolution * widthP
+        RAD = radC * widthP
+        clearM()
+        drawGrid(lat, lon, gridSize, city)
+        searchCurrentEl.setAttribute('style', 'display: none')
+        currentLoc.setAttribute('style', 'display: none')
+        searchCurrentEl.removeEventListener("click", searchCurrent)
+        currentLoc.removeEventListener("click", localSearch)
+    }).catch(function () {
+        zipCode = "enter valid zip"
+        locationInput.value = ""
+        locationInput.placeholder = zipCode
+    })
 }
 //Changes central coordinates to current center of map, and changes feature size according to new zoomLevel.
 function changeCoord() {
@@ -584,7 +630,7 @@ function displaySearches(index) {
             HDISP.children[w].children[1].innerHTML = storedSearches[1][v]
             w++
         }
-        NEXT.setAttribute("style", "visibility:hidden")
+        NEXT.setAttribute("style", "display: none")
     }
     else {
         let w = 0
@@ -593,14 +639,14 @@ function displaySearches(index) {
             HDISP.children[w].children[1].innerHTML = storedSearches[1][v]
             w++
         }
-        NEXT.setAttribute("style", "visibility:visible")
+        NEXT.setAttribute("style", "display: inline")
 
     }
     if (storedSearches[0].length == 0) {
-        ERASE.setAttribute("style", "visibility:hidden")
+        ERASE.setAttribute("style", "display: none")
     }
     else {
-        ERASE.setAttribute("style", "visibility:visible")
+        ERASE.setAttribute("style", "display: inline")
     }
 }
 //See past search history.
@@ -625,8 +671,8 @@ function eraseSearches() {
 }
 //Updates 'Previous Searches' HTML element to display different searches.
 function eraseSearchDisplay() {
-    ERASE.setAttribute("style", "visibility:hidden")
-    NEXT.setAttribute("style", "visibility:hidden")
+    ERASE.setAttribute("style", "display: none")
+    NEXT.setAttribute("style", "display: none")
     PREV.setAttribute("style", "display:none")
     for (let v = 0; v < 3; v++) {
         HDISP.children[v].children[0].textContent = ""

@@ -6,32 +6,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/css/ol.css" type="text/css">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
-    />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
     <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.12.0/build/ol.js"></script>
     <title>Bluer Skies</title>
 </head>
 
 <body>
-    
+
     <nav class="menu navbar-brand navbar is-warning " role="navigation" aria-label="main navigation">
         <a class="navbar-item navbar-start" href="">
-          <img src="././assets/images/TranspCenterLogo.png" width="112" height="50"
-        /></a>
+            <img src="././assets/images/TranspCenterLogo.png" width="112" height="50" /></a>
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
         </a>
-      </div>
+        </div>
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              
-              <div class="navbar-item has-dropdown is-hoverable">
+
+                <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
                         Resources
                     </a>
@@ -39,61 +36,61 @@
                         <a class="navbar-item" href="https://aqicn.org/api/" target="_blank">
                             Air Quality Index API
                         </a>
-                        <a class="navbar-item" href="https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm" target="_blank">
-                            EPA page on PM<sub>2.5</sub> 
+                        <a class="navbar-item"
+                            href="https://www.epa.gov/pm-pollution/health-and-environmental-effects-particulate-matter-pm"
+                            target="_blank">
+                            EPA page on PM<sub>2.5</sub>
                         </a>
-                        <a class="navbar-item" href="https://www.airnow.gov/aqi/aqi-basics/extremely-high-levels-of-pm25/" target="_blank">
-                            How to reduce exposure to PM<sub>2.5</sub> 
+                        <a class="navbar-item"
+                            href="https://www.airnow.gov/aqi/aqi-basics/extremely-high-levels-of-pm25/" target="_blank">
+                            How to reduce exposure to PM<sub>2.5</sub>
                         </a>
                     </div>
                 </div>
-      </nav>
+    </nav>
 
     <div id="box">
-        
+
         <div class="boxlet2">
             <div class=" columns panel-block">
                 <div class="column is-half"></div>
-                <form class = "mx-1">
-                  <!-- <label for="zip">Zip Code:</label><br /> -->
-                  <!-- added Bulma CSS formating for input format -->
-                    <input
-                        class="input is-info is-quarter"
-                        type="text"
-                        placeholder="Enter Location..."
-                        id="enterZip"
-                        name="zip"
-                    />
+                <form class="mx-1">
+                    <!-- <label for="zip">Zip Code:</label><br /> -->
+                    <!-- added Bulma CSS formating for input format -->
+                    <input class="input is-info is-quarter" type="text" placeholder="Enter Location..." id="enterZip"
+                        name="zip" />
                 </form>
-                
+
                 <!-- added Bulma formating CSS for Buttons -->
                 <button class="button is-info is-quarter " type="button" id="ok">Search</button><br>
                 <!-- added Bulma formatting CSS for Buttons -->
-            </div>           
-            
+            </div>
+
             <div id="overlayContainer" class="card">
                 <div id="disp">
                     <div id="map" class="map"></div>
                 </div>
                 <div id="wait1"></div>
                 <div id="wait2"></div>
+                <button class="button is-info mx-1" type="button" id="here">Search Here<i class="fa fa-search ml-1"></i></button>
+
+                <button class="searchLoc" id="currentLoc"><i class="fa fa-crosshairs" style="font-size:24px"></i></button>
                 <div id="mapTitleWrap">
                     <div>PM <sub>2.5</sub> levels</div>
-                    <button class="button is-info columns is-centered mt-1" type="button" id="here">Search Here<i class="fa fa-search ml-1"></i></button>
-                    <button class="ml-6 searchLoc" id="currentLoc"><i class="fa fa-crosshairs" style="font-size:24px"></i></button>
+
                 </div>
-                
+
 
             </div>
-            
+
         </div>
         <div class="boxlet3">
-                  
+
             <div id="localLevels" class="card rDisp">
                 <div class="TitleWrap card-content">
                     <h2 id="levelsTitle" class="content title is-5"></h2>
                     <br>
-                </div> 
+                </div>
                 <div id="levelsContent">
                     <div></div>
                     <div></div>
@@ -110,12 +107,12 @@
                 </div>
                 <br>
             </div>
-            
+
             <div id="previous" class="card rDisp">
                 <div class="TitleWrap card-content">
                     <h2 class="content title is-5">Previous Searches</h2>
                 </div>
-                
+
                 <div id="disp2">
                     <button type="button" class="button is-info mx-1" id="eraseSearches">Clear</button>
                     <br><br>
@@ -136,18 +133,18 @@
                     <br>
                     <div id="prevNav">
                         <button type="button" class="button is-info mx-1" id="seeNext">Next</button>
-                        <button type="button" class="button is-info" id="seePrev">Back</button>                  
-                        
+                        <button type="button" class="button is-info" id="seePrev">Back</button>
+
                     </div>
                     <br><br>
                 </div>
-                
+
             </div>
         </div>
     </div>
 
     <div class='ol-popup' id="popup">
-        <span class ='ol-popup-closer' id='popup-closer'></span><br>
+        <span class='ol-popup-closer' id='popup-closer'></span><br>
     </div>
 
     <script type="text/javascript" src="./assets/js/script.js"></script>
@@ -156,7 +153,7 @@
 <footer>
     <div class="ourFooter content has-text-centered">
         <p>
-            <strong>© 2022 BLUER SKIES™</strong>  Air Quality Map. All Rights Reserved.
+            <strong>© 2022 BLUER SKIES™</strong> Air Quality Map. All Rights Reserved.
         </p>
     </div>
 </footer>

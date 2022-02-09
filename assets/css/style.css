@@ -1,10 +1,13 @@
 *{
     font-family:sans-serif;    
 }
-canvas {
-    touch-action: none;
+#here{
+    position:absolute;
+    width:40%;
+    top: 10%;
+    left: 30%;
+    z-index:4;
 }
-
 .ourFooter {
     margin-top: 100px;
     bottom: 0;
@@ -16,10 +19,21 @@ canvas {
     background-color: white;
 }
 .searchLoc {
+    bottom: 5%;
+    left: 5%;
+    z-index: 6;
     background-color: #3488CE;
     border: none;
     border-radius: 5px;
     color: white;
+    position: absolute;
+}
+.currentContainer {
+    text-align: center;
+}
+.getCurrent {
+    z-index: 7;
+    margin-top: 50px;
 }
 .searchLoc:hover {
     cursor: pointer;
@@ -241,7 +255,7 @@ sub {
 }
 @media screen and (max-width:620px){
     .searchLoc {
-        margin-top: 400px;
+        margin-top: 350px;
     }
     .boxlet3 {
         margin-top: 80px;
@@ -268,7 +282,7 @@ sub {
 }
 @media screen and (max-width:520px){
     .searchLoc {
-        margin-top: 300px;
+        margin-top: 250px;
     }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels,#prevNav{    
         height:400px;
@@ -290,7 +304,7 @@ sub {
 }
 @media screen and (max-width:420px){
     .searchLoc {
-        margin-top: 200px;
+        margin-top: 150px;
     }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav{       
         height: 300px;
