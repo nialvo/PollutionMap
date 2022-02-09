@@ -87,7 +87,11 @@ function searchCurrent() {
 //Event listener function for new search location.
 function myFunction() {
     clicked = true
-    if (/^\d{5}(-\d{4})?$/.test(locationInput.value)) changeZip(locationInput.value)
+    if (/^\d{5}(-\d{4})?$/.test(locationInput.value) && locationInput.value.length == 5) changeZip(locationInput.value)
+    else if (locationInput.value == undefined || locationInput.value.length < 2 || (/^\d+$/.test(locationInput.value))) {
+        locationInput.value = ''
+        return locationInput.placeholder = " Please enter a valid location..."
+    }
     else searchLocation(locationInput.value)
 }
 //Start the program
@@ -153,6 +157,7 @@ function start() {
 //Initial grid draw.
 function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.      
     locationInput.value = ''
+    locationInput.placeholder = "Enter a location..."
     searched = false
     eraseSearchDisplay()
     displaySearches(fs)
@@ -550,7 +555,7 @@ function changeZip(zipCode) {
         searchCurrentEl.removeEventListener("click", searchCurrent)
         currentLoc.removeEventListener("click", localSearch)
     }).catch(function () {
-        zipCode = "enter valid zip"
+        zipCode = "Please enter a valid ZIP..."
         locationInput.value = ""
         locationInput.placeholder = zipCode
     })
