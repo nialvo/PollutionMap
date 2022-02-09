@@ -39,6 +39,7 @@ const OK = document.getElementById("ok")
 OK.addEventListener("click", myFunction)
 const searchCurrentEl = document.getElementById('here')
 searchCurrentEl.addEventListener("click", changeCoord)
+searchCurrentEl.setAttribute('style', 'visibility: hidden')
 //localStorage HTML elements.
 const HDISP = document.getElementById("displayedSearches")
 let fs = 0;//index of first stored element to display
@@ -281,8 +282,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         document.addEventListener('mouseup', function () {
                             isMouseDown = false
                             if(isMouseDown == false) {
-                                searchCurrentEl.setAttribute("style", "visibility:visible")
-                                isMouseDown = undefined
+                                restoreSearchButton()
                             }
                         })
                         //On mouse hold down and drag, nothing happens.
@@ -390,7 +390,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             OK.addEventListener("click", myFunction)
                         })
                         map.getView().on("change:center", function () {
-                            searchCurrentEl.setAttribute("style", "visibility:hidden")
+                            searchCurrentEl.setAttribute("style", "visibility: hidden")
                             restoreSearchButton()
                         })     
                         map.addOverlay(popup)
@@ -406,7 +406,7 @@ function restoreSearchButton() {
         T = setTimeout(function(){
             searchCurrentEl.setAttribute("style", "visibility: visible")
             searchCurrentEl.addEventListener("click", changeCoord)
-        }, 250)
+        }, 500)
     }
 }
 //Get input location data.
