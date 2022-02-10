@@ -295,12 +295,22 @@ sub {
     }
 }
 @media screen and (max-width:520px){
+    #emptyColumn {
+        flex-grow: 0;
+        display: none;
+    }
+    #containerDiv {
+        justify-content: center;
+    }
     .searchLoc {
         margin-top: 250px;
     }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels,#prevNav{    
         height:400px;
-        width:400px;      
+        width:100vw;      
+    }
+    #map, #overlayContainer, #disp, #wait1, #wait2,.boxlet2 {
+        height: 600px;
     }
     #seePrev{
         left:230px;
@@ -321,20 +331,17 @@ sub {
         margin-left:0;
         margin-right:10px;
         margin-top: 0;
+        width: 100vw;
     }
     .searchLoc {
         margin-top: 150px;
     }
-    #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav{       
+    #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav {       
         height: 300px;
-        width:300px;        
+        width:100vw;        
     }
-    #map, #overlayContainer {
+    #map, #overlayContainer, #disp, #wait1, #wait2,.boxlet2 {
         height: 600px;
-        width: 100vw;
-    }
-    #localLevels {
-        margin-top: 400px;
     }
     #seePrev{
         left:130px;
