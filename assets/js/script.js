@@ -212,8 +212,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         llContent.children[0].innerHTML = "no data"
                     }
                     //Logs the central point to localStorage.
-                        storedSearches[0].unshift(city)
-                        storedSearches[1].unshift(sstr)
+                    storedSearches[0].unshift(city)
+                    storedSearches[1].unshift(sstr)
                 }
                 //Pushes new points on the map display, describes a grid centered at lati lonj
                 features.push(new ol.Feature({
@@ -505,16 +505,35 @@ function searchLocation(search) {
         .then(function (data) {
             if (!data) return
             let box = data.boundingbox
-            console.log(box)
-            if(box[0] < 0 && box[1] > 0) box[0] = Math.abs(box[0])
-            if(box[2] < 0 && box[3] > 0) box[2] = Math.abs(box[2])
-            /*box[0] = Math.max(data.lon - 20, box[0])
-            box[1] = Math.min(data.lat + 20, box[1])
-            box[2] = Math.max(data.lon - 20, box[2])
-            box[3] = Math.min(data.lat + 20, box[3])*/
-            console.log(box)
-            let left = box[2], right = box[3], bottom = box[0], top = box[1]
-            goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+            let left, right, bottom, top
+            if (box[2] > 0 && box[0] > 0) {
+                left = box[2], right = box[3], bottom = box[0], top = box[1]
+                goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                return
+            }
+            else if (box[0] < 0 && box[1] > 0) {
+                bottom = Math.max(box[0], data.lat - 15), top = Math.min(box[1], data.lat + 15)
+                left = Math.max(box[2], data.lon - 15), right = Math.min(box[3], data.lon + 15)
+                goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                return
+            }
+            else if (box[2] < 0 && box[3] > 0 || box[3] < 0) {
+                if (box[3] - box[2] > 100) {
+                    box[2] = Math.abs(box[2])
+                    left = box[2], right = box[3], bottom = box[0], top = box[1]
+                    goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                    return
+                }
+                bottom = Math.max(box[0], data.lat - 7), top = Math.min(box[1], data.lat + 7)
+                left = Math.max(box[2], data.lon - 7), right = Math.min(box[3], data.lon + 7)
+                goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                return
+            }
+            else {
+                left = box[2], right = box[3], bottom = box[0], top = box[1]
+                goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                return
+            }
         })
 }
 //Display map of entered location with size dependent on size of location.
