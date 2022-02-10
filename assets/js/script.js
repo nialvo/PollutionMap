@@ -145,7 +145,6 @@ function start() {
         }
         locationInput.value = zip
         widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
-        //latInc = Inc * widthP * 0.010986328125
         latInc = Inc * widthP * 0.00274658203125
         RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
@@ -158,7 +157,7 @@ function start() {
         city = "Beverley Hills"
         locationInput.value = zip
         widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
-        latInc = Inc * widthP
+        latInc = Inc * widthP * 0.00274658203125
         RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
         locationInput.value = ''
@@ -445,7 +444,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             else if (clicked == false) currentLoc.setAttribute("style", "visibility: visible")
                             restoreSearchButton()
                         })
-                        console.log(map.getView().getResolutionForZoom(zoomLevel))
                         map.addOverlay(popup)
                     }
                 })
@@ -492,7 +490,9 @@ function getLocationData() {
         })
         .then(function (data) {
             //Checks if data is an Array type object containing multiple possible locations.
-            if (data instanceof Array) return data[0]
+            if (data instanceof Array) {
+                return data[0]
+            }
             if (data.status !== "ok") return
             data.data.lonLat = [arguments[0], arguments[1]]
             return data.data
@@ -504,6 +504,8 @@ function searchLocation(search) {
         .then(function (data) {
             if (!data) return
             let box = data.boundingbox
+            if(box[0] < 0 && box[1] > 0) box[0] = Math.abs(box[0])
+            if(box[2] < 0 && box[3] > 0) box[2] = Math.abs(box[2])
             let left = box[2], right = box[3], bottom = box[0], top = box[1]
             goToLocation(data.lat, data.lon, [left, bottom], [right, top])
         })
@@ -727,5 +729,5 @@ const minSize = window.matchMedia("(min-width: 1024px)")
 const maxSize = window.matchMedia("(max-width: 1023px)")
 mediaQueryOne(minSize)
 mediaQueryTwo(maxSize)
-minSize.addListener(mediaQueryOne)
-maxSize.addListener(mediaQueryTwo)
+minSize.addEventListener("change", mediaQueryOne)
+maxSize.addEventListener("change", mediaQueryTwo)
