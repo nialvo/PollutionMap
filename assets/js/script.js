@@ -709,20 +709,22 @@ function eraseSearchDisplay() {
         HDISP.children[v].children[1].textContent = ""
     }
 }
-function mediaQuery(queryOne, queryTwo) {
-    if (queryOne.matches) {
-        console.log('query one')
+//Screen size queries for navbar type.
+function mediaQueryOne(query) {
+    if (query.matches) {
         document.querySelector('.navbar-link').setAttribute('style', 'display: flex')
         navbarMenu.classList.remove('is-active')  
     }
-    if (queryTwo.matches) {
-        console.log('query two')
+}
+function mediaQueryTwo(query) {
+    if (query.matches) {
         navbarMenu.classList.remove('is-active')
         document.querySelector('.navbar-link').setAttribute('style', 'display: none')  
     }
 }
 const minSize = window.matchMedia("(min-width: 1024px)")
 const maxSize = window.matchMedia("(max-width: 1023px)")
-mediaQuery(minSize, maxSize)
-minSize.addListener(mediaQuery)
-maxSize.addListener(mediaQuery)
+mediaQueryOne(minSize)
+mediaQueryTwo(maxSize)
+minSize.addListener(mediaQueryOne)
+maxSize.addListener(mediaQueryTwo)
