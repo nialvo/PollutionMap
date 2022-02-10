@@ -647,6 +647,7 @@ function clearM() {
 }
 //Displays searches in HTML element.
 function displaySearches(index) {
+    storedSearches[0].reverse()
     if (index == 0) {
         PREV.setAttribute("style", "display:none")
     }
@@ -654,6 +655,7 @@ function displaySearches(index) {
         PREV.setAttribute("style", "display:inline")
     }
     if (storedSearches[0].length - index < 4) {
+
         let w = 0
         for (let v = index; v < storedSearches[0].length; v++) {
             HDISP.children[w].children[0].innerHTML = storedSearches[0][v]
@@ -713,13 +715,13 @@ function eraseSearchDisplay() {
 function mediaQueryOne(query) {
     if (query.matches) {
         document.querySelector('.navbar-link').setAttribute('style', 'display: flex')
-        navbarMenu.classList.remove('is-active')  
+        navbarMenu.classList.remove('is-active')
     }
 }
 function mediaQueryTwo(query) {
     if (query.matches) {
         navbarMenu.classList.remove('is-active')
-        document.querySelector('.navbar-link').setAttribute('style', 'display: none')  
+        document.querySelector('.navbar-link').setAttribute('style', 'display: none')
     }
 }
 const minSize = window.matchMedia("(min-width: 1024px)")
