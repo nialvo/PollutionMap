@@ -212,7 +212,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         llContent.children[0].innerHTML = "no data"
                     }
                     //Logs the central point to localStorage.
-                        storedSearches[0].unshift(city + " " + zip)
+                        storedSearches[0].unshift(city)
+                        storedSearches[0].unshift(sstr)
                 }
                 //Pushes new points on the map display, describes a grid centered at lati lonj
                 features.push(new ol.Feature({
@@ -504,8 +505,10 @@ function searchLocation(search) {
         .then(function (data) {
             if (!data) return
             let box = data.boundingbox
+            console.log(box)
             if(box[0] < 0 && box[1] > 0) box[0] = Math.abs(box[0])
             if(box[2] < 0 && box[3] > 0) box[2] = Math.abs(box[2])
+            console.log(box)
             let left = box[2], right = box[3], bottom = box[0], top = box[1]
             goToLocation(data.lat, data.lon, [left, bottom], [right, top])
         })
