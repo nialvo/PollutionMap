@@ -6,7 +6,7 @@ This website displays a scrollable map with a grid of colored points representin
 It uses (quasi) unlimited free APIs.<br>
 
 A work in progress.<br>
-<img src="./assets/images/Capture.PNG" alt="The webpage">
+<img src="./assets/images/Capture.png" alt="The webpage">
 
 
 Try it out here:<br>
