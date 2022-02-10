@@ -27,6 +27,12 @@ let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldS
   345
   012*/
 //DOM element declarations.
+const navbarMenu = document.querySelector('.navbar-menu')
+const navbarBurger = document.querySelector('.navbar-burger')
+navbarBurger.addEventListener("click", function () {
+    navbarMenu.classList.toggle('is-active')
+    document.querySelector('.navbar-link').setAttribute('style', 'display: none')
+})
 const overlayContainerEl = document.querySelector('.ol-popup')
 const popupInfo = document.querySelector('.ol-popup-closer')
 const llTitle = document.getElementById("levelsTitle")
@@ -703,3 +709,20 @@ function eraseSearchDisplay() {
         HDISP.children[v].children[1].textContent = ""
     }
 }
+function mediaQuery(queryOne, queryTwo) {
+    if (queryOne.matches) {
+        console.log('query one')
+        document.querySelector('.navbar-link').setAttribute('style', 'display: flex')
+        navbarMenu.classList.remove('is-active')  
+    }
+    if (queryTwo.matches) {
+        console.log('query two')
+        navbarMenu.classList.remove('is-active')
+        document.querySelector('.navbar-link').setAttribute('style', 'display: none')  
+    }
+}
+const minSize = window.matchMedia("(min-width: 1024px)")
+const maxSize = window.matchMedia("(max-width: 1023px)")
+mediaQuery(minSize, maxSize)
+minSize.addListener(mediaQuery)
+maxSize.addListener(mediaQuery)
