@@ -6,8 +6,7 @@ This website displays a scrollable map with a grid of colored points representin
 It uses (quasi) unlimited free APIs.<br>
 
 A work in progress.<br>
-<img src="./assets/images/Capture.png" alt="The webpage">
-
+![Image of website](./assets/images/Capture.png)
 
 Try it out here:<br>
 <a href="https://lewisemarcus.github.io/PollutionMap/">LINK TO WEBSITE</a><b>
