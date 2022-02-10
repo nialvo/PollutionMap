@@ -19,7 +19,7 @@ var Inc = orInc
 //These three must change with zoom, or first two musy change when user changes zoom.
 let lonInc
 let latInc = .48
-let zoomLevel = 7
+let zoomLevel = 9
 //Map and styling declarations.
 let features, greyFeature, map, vectorSource, vectorLayer, p, selectedFeat, oldStyle, isMouseDown, T, isScrolling, searched, clicked
 //'p' in drawGrid loop function is to enumerate the points on the grid:
@@ -93,8 +93,8 @@ function myFunction() {
         return locationInput.placeholder = " Please enter a valid location..."
     }
     else {
-        city = locationInput.value;
-        searchLocation(locationInput.value);
+        city = locationInput.value
+        searchLocation(locationInput.value)
     }
 }
 //Start the program
@@ -102,7 +102,7 @@ start()
 //launches when page loads, get location from IP and draw map.
 function start() {
     clearM()
-    zoomLevel = 7
+    zoomLevel = 9
     searchCurrentEl.setAttribute('style', 'visibility: hidden')
     currentLoc.setAttribute('style', 'visibility: hidden')
     fetch(ipUrl).then(function (response) {
@@ -139,7 +139,8 @@ function start() {
         }
         locationInput.value = zip
         widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
-        latInc = Inc * widthP * 0.010986328125
+        //latInc = Inc * widthP * 0.010986328125
+        latInc = Inc * widthP * 0.00274658203125
         RAD = radC * widthP
         drawGrid(lat, lon, gridSize, city)
         locationInput.value = ''
@@ -438,6 +439,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                             else if (clicked == false) currentLoc.setAttribute("style", "visibility: visible")
                             restoreSearchButton()
                         })
+                        console.log(map.getView().getResolutionForZoom(zoomLevel))
                         map.addOverlay(popup)
                     }
                 })
@@ -448,6 +450,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
 function restoreSearchButton() {
     if ((isMouseDown == true || isMouseDown == undefined) || (isScrolling == true && searched == true)) {
         searchCurrentEl.setAttribute("style", "visibility: hidden")
+        currentLoc.setAttribute("style", "visibility: hidden")
         searchCurrentEl.removeEventListener("click", searchCurrent)
         currentLoc.removeEventListener("click", localSearch)
         isScrolling = false
@@ -458,10 +461,11 @@ function restoreSearchButton() {
         T = setTimeout(function () {
             if (searched == false && clicked == false) {
                 searchCurrentEl.setAttribute("style", "visibility: visible")
+                currentLoc.setAttribute("style", "visibility: visible")
                 currentLoc.addEventListener("click", localSearch)
                 searchCurrentEl.addEventListener("click", searchCurrent)
             }
-        }, 500)
+        }, 250)
     }
 }
 //Get input location data.
