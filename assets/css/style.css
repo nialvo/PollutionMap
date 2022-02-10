@@ -121,8 +121,6 @@
 #map {
     height: 600px;
     width: 600px;
-    
-    /*margin:auto;  */
 }
 
 #info{
@@ -144,7 +142,6 @@
 .boxlet2{
     margin-left:10px;
     margin-right:10px;
-   
 }
 
 
@@ -320,12 +317,24 @@ sub {
     }
 }
 @media screen and (max-width:420px){
+    .boxlet2{
+        margin-left:0;
+        margin-right:10px;
+        margin-top: 0;
+    }
     .searchLoc {
         margin-top: 150px;
     }
     #overlayContainer, #map, #wait1, #wait2,.boxlet2, #previous,#localLevels, #prevNav{       
         height: 300px;
         width:300px;        
+    }
+    #map, #overlayContainer {
+        height: 600px;
+        width: 100vw;
+    }
+    #localLevels {
+        margin-top: 400px;
     }
     #seePrev{
         left:130px;

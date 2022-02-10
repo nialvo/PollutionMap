@@ -213,8 +213,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         llContent.children[0].innerHTML = "no data"
                     }
                     //Logs the central point to localStorage.
-                    storedSearches[0].push(city + " " + zip)
-                    storedSearches[1].push(sstr)
+                        storedSearches[0].unshift(city + " " + zip)
+                        storedSearches[1].unshift(sstr)
                 }
                 //Pushes new points on the map display, describes a grid centered at lati lonj
                 features.push(new ol.Feature({
@@ -647,7 +647,6 @@ function clearM() {
 }
 //Displays searches in HTML element.
 function displaySearches(index) {
-    storedSearches[0].reverse()
     if (index == 0) {
         PREV.setAttribute("style", "display:none")
     }
