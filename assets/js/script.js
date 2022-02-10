@@ -213,7 +213,6 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     }
                     //Logs the central point to localStorage.
                         storedSearches[0].unshift(city + " " + zip)
-                        storedSearches[1].unshift(sstr)
                 }
                 //Pushes new points on the map display, describes a grid centered at lati lonj
                 features.push(new ol.Feature({
@@ -491,6 +490,7 @@ function getLocationData() {
         .then(function (data) {
             //Checks if data is an Array type object containing multiple possible locations.
             if (data instanceof Array) {
+                city = data[0].display_name
                 return data[0]
             }
             if (data.status !== "ok") return
