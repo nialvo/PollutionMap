@@ -295,6 +295,9 @@ sub {
     }
 }
 @media screen and (max-width:520px){
+    body {
+    overflow-x: hidden;
+}
     .boxlet2{
         margin-left:0;
         margin-right:0px;
