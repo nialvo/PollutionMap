@@ -219,7 +219,8 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 features.push(new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))
                 }))
-                //Get PM25 level and set color of point to match level.
+               //Get PM25 level and set color of point to match level.
+               if(data.data.iaqi["pm25"]){
                 let q = data.data.iaqi["pm25"].v
                 let colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
@@ -230,7 +231,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                         })
                     })
                 })
-                //Applies an id of 'color' to each point with no data.
+                //Applies an id of 'color' to each point with data.
                 let str = "";
                 let zz = 0;
                 for (const ptype of pollTypes) {
@@ -248,30 +249,39 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     return colorStyle
                 })
                 p++
-            })
-                //Catch occurs when no data available.
-                .catch(function () {
-                    const greyStyle = new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: RAD,
-                            fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data.
-                        })
+            }else{
+        
+                //Catch occurs when no pm2.5 data available.
+            
+                const greyStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: RAD,
+                        fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data.
                     })
-                    //Applies an id of 'grey' to each point with no data.
-                    greyFeatures.push(features[p])
-                    let str = "no data here";
-                    for (let each of greyFeatures) {
-                        each.set('id', str)
-                    }
-                    features[p].setStyle(greyStyle)
-                    //Applies dynamic size adjustment to each feature.
-                    features[p].setStyle(function (feature, resolution) {
-                        greyStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
-                        return greyStyle
-                    })
-                    p++
-                    console.log("ERROR: NO DATA FOUND FOR CIRCLE")
                 })
+                //Applies an id of 'grey' to each point with no data.
+                greyFeatures.push(features[p])
+                let str = "";
+                let zz = 0;
+                for (const ptype of pollTypes) {
+                    if (ptype in data.data.iaqi) {
+                        str = str + pollNames[zz] + ": " + data.data.iaqi[ptype].v + "<br>";
+                    }
+                    zz++
+                }
+                if(str=="")str = "no data here";
+                for (let each of greyFeatures) {
+                    each.set('id', str)
+                }
+                features[p].setStyle(greyStyle)
+                //Applies dynamic size adjustment to each feature.
+                features[p].setStyle(function (feature, resolution) {
+                    greyStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
+                    return greyStyle
+                })
+                p++
+                console.log("ERROR: NO DATA FOUND FOR CIRCLE")
+            }})
                 .then(function () {
                     //If we are at final point(p^2) draw map.
                     if (p == 81) {
