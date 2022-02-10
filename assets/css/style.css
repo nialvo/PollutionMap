@@ -295,6 +295,12 @@ sub {
     }
 }
 @media screen and (max-width:520px){
+    .boxlet2{
+        margin-left:0;
+        margin-right:0px;
+        margin-top: 0;
+        width: 100vw;
+    }
     #emptyColumn {
         flex-grow: 0;
         display: none;
@@ -327,12 +333,7 @@ sub {
     }
 }
 @media screen and (max-width:420px){
-    .boxlet2{
-        margin-left:0;
-        margin-right:10px;
-        margin-top: 0;
-        width: 100vw;
-    }
+
     .searchLoc {
         margin-top: 150px;
     }
