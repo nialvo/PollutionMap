@@ -345,7 +345,7 @@ sub {
         width:100vw;        
     }
     #map, #overlayContainer, #disp, #wait1, #wait2,.boxlet2 {
-        height: 600px;
+        height: 500px;
     }
     #seePrev{
         left:130px;
