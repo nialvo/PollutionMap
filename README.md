@@ -5,7 +5,7 @@
 This website displays a scrollable map with a grid of colored points representing fine particle pollution levels.<br>
 It uses (quasi) unlimited free APIs.<br>
 
-A work in progress.<br>
+
 ![Image of website](./assets/images/Capture.PNG)
 
 Try it out here:<br>
