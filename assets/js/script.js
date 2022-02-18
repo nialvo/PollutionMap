@@ -577,9 +577,9 @@ function goToLocation(lat, lon, min, max) {
     clearM()
     map.getView().fit(geo)
     zoomLevel = Math.max(Math.min(map.getView().getZoom(), 14), 4)
-    let resolution = map.getView().getResolution()
+    let resolution = map.getView().getResolutionForZoom(zoomLevel)
     widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
-    latInc = Inc * resolution * widthP
+    latInc = Inc * (resolution) * widthP
     RAD = radC * widthP
     drawGrid(lat, lon, gridSize, city)
 }
