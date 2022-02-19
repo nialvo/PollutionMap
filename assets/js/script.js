@@ -220,7 +220,7 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     geometry: new ol.geom.Point(ol.proj.fromLonLat([lo, la]))
                 }))
                //Get PM25 level and set color of point to match level.
-               if(data.data.iaqi["pm25"]){
+               if(typeof(data.data) !== 'string' && data.data.iaqi["pm25"]){
                 let q = data.data.iaqi["pm25"].v
                 let colorStyle = new ol.style.Style({
                     image: new ol.style.Circle({
@@ -249,10 +249,9 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                     return colorStyle
                 })
                 p++
-            }else{
-        
-                //Catch occurs when no pm2.5 data available.
-            
+            }
+            else {
+                //Else occurs when no pm2.5 data available.
                 const greyStyle = new ol.style.Style({
                     image: new ol.style.Circle({
                         radius: RAD,
@@ -282,6 +281,32 @@ function drawGrid(lati, lonj, s, City) { //'s' is width and height of grid.
                 p++
                 console.log("ERROR: NO DATA FOUND FOR CIRCLE")
             }})
+            .catch(function() {       
+                //Catch occurs when no data available.
+                const greyStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: RAD,
+                        fill: new ol.style.Fill({ color: [130, 131, 130] })//set colors to grey if no data.
+                    })
+                })
+                //Applies an id of 'grey' to each point with no data.
+                greyFeatures.push(features[p])
+                let str = "";
+                let zz = 0;
+                str = "no data here";
+                for (let each of greyFeatures) {
+                    each.set('id', str)
+                }
+                features[p].setStyle(greyStyle)
+                //Applies dynamic size adjustment to each feature.
+                features[p].setStyle(function (feature, resolution) {
+                    greyStyle.getImage().setScale(map.getView().getResolutionForZoom(zoomLevel) / resolution)
+                    return greyStyle
+                })
+                p++
+                console.log("ERROR: NO DATA FOUND FOR CIRCLE")
+               
+            })
                 .then(function () {
                     //If we are at final point(p^2) draw map.
                     if (p == 81) {
@@ -519,30 +544,27 @@ function searchLocation(search) {
             if (box[2] > 0 && box[0] > 0) {
                 left = box[2], right = box[3], bottom = box[0], top = box[1]
                 goToLocation(data.lat, data.lon, [left, bottom], [right, top])
-                return
             }
             else if (box[0] < 0 && box[1] > 0) {
                 bottom = Math.max(box[0], data.lat - 15), top = Math.min(box[1], data.lat + 15)
                 left = Math.max(box[2], data.lon - 15), right = Math.min(box[3], data.lon + 15)
                 goToLocation(data.lat, data.lon, [left, bottom], [right, top])
-                return
             }
             else if (box[2] < 0 && box[3] > 0 || box[3] < 0) {
                 if (box[3] - box[2] > 100) {
                     box[2] = Math.abs(box[2])
                     left = box[2], right = box[3], bottom = box[0], top = box[1]
                     goToLocation(data.lat, data.lon, [left, bottom], [right, top])
-                    return
                 }
-                bottom = Math.max(box[0], data.lat - 7), top = Math.min(box[1], data.lat + 7)
-                left = Math.max(box[2], data.lon - 7), right = Math.min(box[3], data.lon + 7)
-                goToLocation(data.lat, data.lon, [left, bottom], [right, top])
-                return
+                else {
+                    bottom = Math.max(box[0], data.lat - 7), top = Math.min(box[1], data.lat + 7)
+                    left = Math.max(box[2], data.lon - 7), right = Math.min(box[3], data.lon + 7)
+                    goToLocation(data.lat, data.lon, [left, bottom], [right, top])
+                }
             }
             else {
                 left = box[2], right = box[3], bottom = box[0], top = box[1]
                 goToLocation(data.lat, data.lon, [left, bottom], [right, top])
-                return
             }
         })
 }
@@ -555,9 +577,9 @@ function goToLocation(lat, lon, min, max) {
     clearM()
     map.getView().fit(geo)
     zoomLevel = Math.max(Math.min(map.getView().getZoom(), 14), 4)
-    let resolution = map.getView().getResolution()
+    let resolution = map.getView().getResolutionForZoom(zoomLevel)
     widthP = Math.min(parseInt(getComputedStyle(sizer).getPropertyValue('width')) / 600)
-    latInc = Inc * resolution * widthP
+    latInc = Inc * (resolution) * widthP
     RAD = radC * widthP
     drawGrid(lat, lon, gridSize, city)
 }
