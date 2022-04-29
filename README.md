@@ -9,7 +9,7 @@ It uses (quasi) unlimited free APIs.<br>
 ![Image of website](./assets/images/Capture.PNG)
 
 Try it out here:<br>
-<a href="https://lewisemarcus.github.io/PollutionMap/">LINK TO WEBSITE</a><b>
+<a href="https://nialvo.github.io/PollutionMap/">LINK TO WEBSITE</a><b>
 
 
 Contributors:
